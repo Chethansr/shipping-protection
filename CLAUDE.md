@@ -111,19 +111,19 @@ npm run check            # Run tests + bundle size check
 
 ### Core Patterns
 
-**Result Type System** (`src/core/result.ts`)
+**Result Type System** (`web/core/result.ts`)
 - Functional error handling without exceptions
 - `Result<T, E>` is either `Ok<T>` or `Err<E>`
 - Used throughout for safe operations (JSON parsing, fetch, validation)
 
-**State Machine** (`src/state/fsm.ts`)
+**State Machine** (`web/state/fsm.ts`)
 - Manages widget lifecycle: `UNINITIALIZED` → `INITIALIZING` → `READY` → `CALCULATING` → `QUOTE_AVAILABLE` → `ERROR` → `DESTROYED`
 - Phase 0 has terminal `ERROR` state (no retry logic)
 - Phase 1 will add `RETRY` action with exponential backoff
 - Guards validate preconditions (cart not empty, total > 0)
 - Race condition primitives (request IDs, cart hashes) integrated into state
 
-**Event Bus** (`src/state/events.ts`)
+**Event Bus** (`web/state/events.ts`)
 - CustomEvent-based pub/sub using factory-based event system
 - Event names: `narvar:shipping-protection:state:*`, `narvar:shipping-protection:action:*`
 - Events emitted to both internal listeners and `window`
@@ -147,7 +147,7 @@ npm run check            # Run tests + bundle size check
   - Event payload: `{ quote: { amount, currency, eligible, signature, source: 'client' | 'server' } }`
   - Edge service called when page context is 'checkout'
   - Eligibility field consumed from edge response
-  - Quote types extended in `src/services/quote-calculator.ts` with `EdgeQuoteResponse` and `QuoteWithEligibility`
+  - Quote types extended in `web/services/quote-calculator.ts` with `EdgeQuoteResponse` and `QuoteWithEligibility`
 
 **Event Timing (When Events Fire)**:
 - **`quote-available`**: Only fires when retailer calls `render(cartData)`
@@ -188,7 +188,7 @@ Coordinator ──(EventBus)──► Retailer Application
 
 ### Layer Responsibilities
 
-**API Layer** (`src/api.ts`)
+**API Layer** (`web/api.ts`)
 - Exposed globally at `window.Narvar.ShippingProtection`
 - Public methods: `init()`, `render()`, `on()`, `off()`, `setCustomerIdentity()`, `getVersion()`, `isReady()`, `destroy()`
 - Zero-throw guarantee: all methods wrapped to catch exceptions internally, never crash calling application
@@ -197,7 +197,7 @@ Coordinator ──(EventBus)──► Retailer Application
 - `setCustomerIdentity()`: Updates customerId for analytics (Phase 0)
 - Phase 1 will add: `setExperiment()`
 
-**Coordinator** (`src/coordinator.ts`)
+**Coordinator** (`web/coordinator.ts`)
 - Central orchestration layer bridging Public API and internal business logic
 - Factory-based architecture: components depend on state, initialized during bootstrap/init
 - Manages state transitions, race conditions (rapid cart updates), and data flow synchronization
@@ -208,7 +208,7 @@ Coordinator ──(EventBus)──► Retailer Application
   - Event Bus: triggers external events on internal state changes
   - Services: uses `PricingCalculator`, `RateLimiter` for expensive operations
 
-**Services** (`src/services/`)
+**Services** (`web/services/`)
 - Factory pattern for service creation with static state
 - **ConfigService**: Fetches and caches retailer configuration + translations
   - **Client-side fetch**: From Narvar-managed CDN
@@ -229,7 +229,7 @@ Coordinator ──(EventBus)──► Retailer Application
   - **Growthbook**: Fetches experiment config from Narvar CDN asynchronously (2s timeout), receives Analytics track function, exposes `getFeatures()` for evaluated feature settings
   - **Error logging service**: Integration with Rollbar for error and diagnostics collection
 
-**Validation** (`src/validation/schemas.ts`)
+**Validation** (`web/validation/schemas.ts`)
 - Zod schemas for `ShippingProtectionConfig` and `CartData`
 - Used at API boundary to validate inputs before processing
 - `ShippingProtectionConfig`: variant ('toggle' | 'checkbox'), page ('cart' | 'checkout'), retailerMoniker, region, locale
@@ -237,11 +237,11 @@ Coordinator ──(EventBus)──► Retailer Application
 - `CartData`: subtotal (cents), items, fees, discounts, currency (ISO 4217)
 - `CartItem`: line_price (cents), total_tax (cents), quantity, sku, categories
 
-**Error Handling** (`src/errors/widget-error.ts`)
+**Error Handling** (`web/errors/widget-error.ts`)
 - `WidgetError` taxonomy: `CONFIG_ERROR`, `NETWORK_ERROR`, `RENDER_ERROR`, `UNKNOWN_ERROR`
 - Factory functions: `createError()`, type guards: `isRetryable()`, `categorizeError()`
 
-**Web Components** (`src/components/`)
+**Web Components** (`web/components/`)
 - Lit-based custom elements with Shadow DOM (`mode: open`) for DOM/style isolation
 - **narvar-shipping-protection-widget**: Cart page widget (Phase 0)
   - Variant rendering: toggle, checkbox
@@ -253,11 +253,11 @@ Coordinator ──(EventBus)──► Retailer Application
 
 ### Safe Wrappers
 
-The codebase uses safe wrappers in `src/core/` for common operations:
+The codebase uses safe wrappers in `web/core/` for common operations:
 - `safeJsonParse()` / `safeJsonStringify()` - Never throw, return `Result<T, Error>`
 - `safeFetch()` - Wraps fetch with timeout (`TIMEOUTS.API_CALL`)
 - Storage helpers - Safe localStorage/sessionStorage access
-- All timeouts centralized in `src/core/timeouts.ts`
+- All timeouts centralized in `web/core/timeouts.ts`
 
 **Wrapping Philosophy**: Focused wrappers for commonly-failing operations only
 
@@ -470,8 +470,8 @@ NO EXCEPTION PROPAGATES
 - No eval or inline scripts in production bundle
 
 ### Code Organization
-- All source in `src/`
-- Tests colocated: `src/**/__tests__/*.test.ts`
+- All source in `web/`
+- Tests colocated: `web/**/__tests__/*.test.ts`
 - Centralized constants (timeouts, error categories, event names)
 - Result types preferred over try/catch
 - Factory pattern for services and components

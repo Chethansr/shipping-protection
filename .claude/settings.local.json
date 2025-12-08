@@ -1,35 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "mcp__atlassian__getConfluencePage",
-      "mcp__atlassian__getConfluencePageDescendants",
-      "Bash(npm run build:*)",
-      "Bash(npm test:*)",
-      "Bash(npm run size:*)",
-      "Bash(ls:*)",
-      "Bash(npm run dev:*)",
-      "Bash(node:*)",
-      "Bash(curl:*)",
-      "Bash(npm install:*)",
-      "Bash(npx tsc:*)",
-      "Bash(npx --version:*)",
-      "Bash(npx react-native --version)",
-      "Bash(npx expo start --web)",
-      "Bash(npx expo start)",
-      "Bash(lsof:*)",
-      "Bash(kill:*)",
-      "Bash(cd /Users/chethansindhie/dev/Narvar/narvar_shipping_protection/packages/shipping-protection-webview-rn/test-apps/webview-test:*)",
-      "Bash(pkill:*)",
-      "Bash(npx expo start:*)",
-      "Bash(xcrun simctl:*)",
-      "Bash(xcodebuild:*)",
-      "Bash(open -a Simulator)",
-      "Bash(xargs kill:*)",
-      "Bash(npx expo run:ios:*)",
-      "Bash(npx vite --host)",
-      "Bash(git init:*)",
-      "Bash(git add:*)",
-      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: React Native WebView integration - clean checkpoint\n\n## What''s in this checkpoint:\n\n### Core Changes:\n- React Native WebView wrapper component (ShippingProtectionWebView)\n- Bridge adapter (widget-webview.html) connecting RN ↔ Web SDK\n- Clean build process with postbuild script\n- Fixed cart validation (removed unsupported total_tax field)\n\n### File Structure:\n- src/ - Web SDK source code\n- dist/ - Built SDK bundle (shipping-protection.js)\n- public/ - Static assets + dist copy for dev server\n- packages/shipping-protection-webview-rn/ - React Native package\n  - test-apps/webview-test/ - Test app with iOS simulator support\n\n### Build & Dev Setup:\n- npm run build: Builds SDK + copies to public/dist/\n- Terminal 1: npx vite --host (serves widget HTML + SDK)\n- Terminal 2: npx expo start (Metro bundler)\n- Terminal 3: npx expo run:ios (iOS simulator)\n\n### Key Fixes Applied:\n✅ Removed Alert.alert() calls from TestScreen\n✅ Cleaned up nested dist/dist folders\n✅ Fixed cart schema (no total_tax in Phase 0)\n✅ Updated bridge event listeners (window.addEventListener for actions)\n✅ Documented object memoization requirement in README\n\n### Known State:\n- SDK: v0.0.1 (88.80 kB, 26.33 kB gzipped)\n- WebView bridge working with dual event system\n- Ready for testing after iOS app reload\n\n🤖 Generated with Claude Code\nEOF\n)\")"
+      "Bash(git tag:*)"
     ],
     "deny": [],
     "ask": []

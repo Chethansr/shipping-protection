@@ -11,8 +11,7 @@
   ],
   "scripts": {
     "dev": "vite",
-    "build": "vite build && npm run postbuild",
-    "postbuild": "mkdir -p public/dist && cp dist/shipping-protection.js public/dist/",
+    "build": "vite build",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -29,9 +28,9 @@
   "author": "",
   "license": "MIT",
   "sideEffects": [
-    "src/components/**/*.ts",
-    "src/demo/**/*.ts",
-    "src/index.ts"
+    "web/components/**/*.ts",
+    "web/demo/**/*.ts",
+    "web/index.ts"
   ],
   "size-limit": [
     {
