@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <title>Secure.js Demo</title>
+    <title>Narvar Shipping Protection Demo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style>
       body {
@@ -30,6 +30,10 @@
         color: white;
         border-color: #4c6ef5;
       }
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
       pre {
         background: #0b1530;
         color: #e4f0ff;
@@ -45,58 +49,73 @@
         border: 1px solid #d0d7de;
         display: inline-block;
       }
+      .widget-container {
+        margin: 16px 0;
+        padding: 16px;
+        background: #fff;
+        border-radius: 8px;
+        border: 1px solid #d0d7de;
+      }
     </style>
   </head>
   <body>
-    <h1>Secure.js Demo</h1>
-    <p>This page simulates init, quote calculation, and protection selection, and logs state/events.</p>
+    <h1>Shipping Protection Demo</h1>
+    <p>This page demonstrates SDK initialization, quote calculation, and protection selection.</p>
 
     <div class="controls">
-      <button id="btn-init" class="primary">Init SDK</button>
-      <button id="btn-quote">Calculate Quote</button>
-      <button id="btn-add">Add Protection</button>
-      <button id="btn-remove">Remove Protection</button>
+      <button id="btn-init" class="primary">Initialize SDK</button>
+      <button id="btn-render" disabled>Render Widget</button>
     </div>
 
     <div>Current state: <span id="state">UNINITIALIZED</span></div>
 
     <h3>Widget</h3>
-    <narvar-secure-widget></narvar-secure-widget>
+    <div class="widget-container">
+      <narvar-shipping-protection-widget></narvar-shipping-protection-widget>
+    </div>
 
-    <h3>Log</h3>
+    <h3>Event Log</h3>
     <pre id="log"></pre>
 
-    <script src="../dist/secure.js"></script>
+    <script src="./dist/shipping-protection.js"></script>
     <script>
       const logEl = document.getElementById('log');
       const stateEl = document.getElementById('state');
       const btnInit = document.getElementById('btn-init');
-      const btnQuote = document.getElementById('btn-quote');
-      const btnAdd = document.getElementById('btn-add');
-      const btnRemove = document.getElementById('btn-remove');
+      const btnRender = document.getElementById('btn-render');
 
+      // Test configuration
       const config = {
-        retailerMoniker: 'demo-retailer',
-        region: 'us',
+        retailerMoniker: 'dp',
+        region: 'US',
         locale: 'en-US',
-        pricing: { percentage: 5, fixedFee: 0 }
+        variant: 'toggle',
+        page: 'cart',
+        environment: 'qa',
+        // Inline config via data URL (avoids fetch/CORS issues)
+        configUrl: `data:application/json,${encodeURIComponent(JSON.stringify({
+          retailerMoniker: 'dp',
+          region: 'US',
+          locale: 'en-US',
+          pricing: { percentage: 2.5, fixedFee: 0 }
+        }))}`
       };
 
+      // Test cart data
       const cart = {
         items: [
-          { sku: 'SKU-1', quantity: 1, price: 100 },
-          { sku: 'SKU-2', quantity: 2, price: 50 }
+          { sku: 'SKU-001', quantity: 1, price: 29.99 },
+          { sku: 'SKU-002', quantity: 2, price: 99.98 }
         ],
-        subtotal: 200,
+        subtotal: 129.97,
         currency: 'USD',
-        fees: 0,
+        fees: 5.99,
         discounts: 0
       };
 
-      const configUrl = `data:application/json,${encodeURIComponent(JSON.stringify(config))}`;
-
       function log(message, detail = {}) {
-        const entry = `${new Date().toISOString()} - ${message} ${JSON.stringify(detail)}\n`;
+        const timestamp = new Date().toISOString();
+        const entry = `${timestamp} - ${message} ${JSON.stringify(detail)}\n`;
         console.log(message, detail);
         logEl.textContent = entry + logEl.textContent;
       }
@@ -105,45 +124,61 @@
         stateEl.textContent = next;
       }
 
-      // Attach listeners to window-level events to trace behavior
-      ['narvar:secure:state:ready', 'narvar:secure:cart:quote-calculated', 'narvar:secure:cart:add-protection', 'narvar:secure:cart:remove-protection', 'narvar:secure:state:error'].forEach((name) => {
-        window.addEventListener(name, (evt) => {
-          log(`event:${name}`, evt.detail || {});
-          if (name === 'narvar:secure:state:ready') setState('READY');
-          if (name === 'narvar:secure:state:error') setState('ERROR');
-          if (name === 'narvar:secure:cart:quote-calculated') setState('QUOTE_AVAILABLE');
-        });
+      // Listen to SDK events
+      window.addEventListener('narvar:shipping-protection:state:ready', (evt) => {
+        log('EVENT: SDK Ready', evt.detail);
+        setState('READY');
+        btnRender.disabled = false;
       });
 
+      window.addEventListener('narvar:shipping-protection:state:quote-available', (evt) => {
+        log('EVENT: Quote Available', evt.detail);
+        setState('QUOTE_AVAILABLE');
+      });
+
+      window.addEventListener('narvar:shipping-protection:action:add-protection', (evt) => {
+        log('EVENT: Protection Added', evt.detail);
+      });
+
+      window.addEventListener('narvar:shipping-protection:action:remove-protection', (evt) => {
+        log('EVENT: Protection Removed', evt.detail);
+      });
+
+      window.addEventListener('narvar:shipping-protection:state:error', (evt) => {
+        log('EVENT: Error', evt.detail);
+        setState('ERROR');
+      });
+
+      // Initialize button handler
       btnInit.addEventListener('click', async () => {
-        const result = await NarvarSecure.init({ configUrl });
+        btnInit.disabled = true;
+        setState('INITIALIZING...');
+        log('Initializing SDK with config', config);
+
+        const result = await window.Narvar.ShippingProtection.init(config);
+
         if (result.ok) {
-          log('init:success');
-          setState('READY');
+          log('SDK initialized successfully');
         } else {
-          log('init:fail', result.error);
+          log('SDK initialization failed', { error: result.error });
           setState('ERROR');
+          btnInit.disabled = false;
         }
       });
 
-      btnQuote.addEventListener('click', () => {
-        const result = NarvarSecure.render(cart);
-        if (result.ok) {
-          log('quote:success', result.value);
-        } else {
-          log('quote:error', result.error);
+      // Render button handler
+      btnRender.addEventListener('click', () => {
+        log('Rendering cart', cart);
+        window.Narvar.ShippingProtection.render(cart);
+        setState('CALCULATING...');
+      });
+
+      // Log SDK version on load
+      window.addEventListener('load', () => {
+        if (window.Narvar && window.Narvar.ShippingProtection) {
+          const version = window.Narvar.ShippingProtection.getVersion();
+          log('SDK Loaded', { version });
         }
-      });
-
-      btnAdd.addEventListener('click', () => {
-        NarvarSecure.on('narvar:secure:cart:add-protection', () => {});
-        NarvarSecure.render(cart);
-        log('action:add-protection');
-      });
-
-      btnRemove.addEventListener('click', () => {
-        NarvarSecure.on('narvar:secure:cart:remove-protection', () => {});
-        log('action:remove-protection');
       });
     </script>
   </body>
