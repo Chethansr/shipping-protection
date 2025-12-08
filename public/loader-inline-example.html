@@ -1,0 +1,33 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Loader Inline Example</title>
+  </head>
+  <body>
+    <h1>Loader Inline Example</h1>
+    <p>Inspect console to see loader stub queue -> real SDK replay.</p>
+    <script>
+      (function (w, d) {
+        var queue = [];
+        var methods = ['init', 'render', 'on', 'off', 'destroy', 'getVersion', 'isReady'];
+        var stub = { _queue: queue, _failed: false };
+        methods.forEach(function (fn) {
+          stub[fn] = function () { queue.push([fn, Array.prototype.slice.call(arguments)]); };
+        });
+        w.NarvarSecure = stub;
+        var s = d.createElement('script');
+        s.async = true;
+        s.src = '../dist/secure.js';
+        s.onerror = function () { stub._failed = true; console.error('Failed to load Secure.js'); };
+        d.head.appendChild(s);
+      })(window, document);
+    </script>
+    <script>
+      (async () => {
+        console.log('Calling init before SDK loads, will be queued');
+        await NarvarSecure.init({ configUrl: 'data:application/json,{}' });
+      })();
+    </script>
+  </body>
+</html>

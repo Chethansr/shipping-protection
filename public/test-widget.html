@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Widget Test</title>
+  <style>
+    narvar-shipping-protection-widget {
+      border: 2px solid red !important;
+      min-height: 100px !important;
+    }
+  </style>
+</head>
+<body>
+  <h1>Widget Test</h1>
+  <p>Widget should appear below:</p>
+  <narvar-shipping-protection-widget></narvar-shipping-protection-widget>
+  <p>Widget should appear above</p>
+  
+  <script type="module">
+    import { NarvarShippingProtection } from '/dist/shipping-protection.js';
+    
+    console.log('NarvarShippingProtection:', NarvarShippingProtection);
+    console.log('Custom element defined:', customElements.get('narvar-shipping-protection-widget'));
+    
+    // Try to find the widget
+    const widget = document.querySelector('narvar-shipping-protection-widget');
+    console.log('Widget element:', widget);
+    console.log('Widget in DOM:', !!widget);
+  </script>
+</body>
+</html>

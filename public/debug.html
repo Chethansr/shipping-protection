@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Debug - Shipping Protection</title>
+  <style>
+    body { font-family: monospace; padding: 20px; }
+    .log { background: #f0f0f0; padding: 10px; margin: 10px 0; border-left: 3px solid #333; }
+    .error { border-left-color: #f00; background: #fee; }
+    .success { border-left-color: #0f0; background: #efe; }
+    narvar-shipping-protection-widget {
+      border: 2px dashed #00f;
+      padding: 20px;
+      margin: 20px 0;
+      display: block;
+      min-height: 100px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Shipping Protection - Debug Page</h1>
+  
+  <h2>Widget Element:</h2>
+  <narvar-shipping-protection-widget id="widget"></narvar-shipping-protection-widget>
+  
+  <h2>Debug Log:</h2>
+  <div id="logs"></div>
+  
+  <script>
+    const logsEl = document.getElementById('logs');
+    function log(msg, type = 'log') {
+      const div = document.createElement('div');
+      div.className = `log ${type}`;
+      div.textContent = `[${new Date().toISOString().substr(11,12)}] ${msg}`;
+      logsEl.appendChild(div);
+      console.log(msg);
+    }
+    
+    log('Page loaded');
+    
+    // Set script URL
+    window.ShippingProtectionScriptUrl = '/dist/shipping-protection.js';
+    log('Set ShippingProtectionScriptUrl: ' + window.ShippingProtectionScriptUrl);
+  </script>
+  
+  <script src="./loader.js"></script>
+  
+  <script>
+    log('Loader executed');
+    log('window.Narvar exists: ' + !!window.Narvar);
+    log('window.Narvar.ShippingProtection exists: ' + !!window.Narvar?.ShippingProtection);
+    
+    // Wait for bundle to load
+    let checkCount = 0;
+    const checkInterval = setInterval(() => {
+      checkCount++;
+      if (window.Narvar?.ShippingProtection?._real) {
+        clearInterval(checkInterval);
+        log('SDK bundle loaded! (_real flag found)', 'success');
+        initializeSDK();
+      } else if (checkCount > 50) {
+        clearInterval(checkInterval);
+        log('SDK bundle failed to load after 5 seconds', 'error');
+      }
+    }, 100);
+    
+    function initializeSDK() {
+      log('Starting SDK initialization...');
+      
+      // Check if custom element is defined
+      const elementDef = customElements.get('narvar-shipping-protection-widget');
+      log('Custom element defined: ' + !!elementDef);
+      
+      // Check widget element
+      const widget = document.getElementById('widget');
+      log('Widget element found: ' + !!widget);
+      if (widget) {
+        log('Widget tagName: ' + widget.tagName);
+        log('Widget has shadowRoot: ' + !!widget.shadowRoot);
+      }
+      
+      // Listen to all SDK events
+      const events = [
+        'narvar:shipping-protection:state:ready',
+        'narvar:shipping-protection:state:quote-available',
+        'narvar:shipping-protection:state:error',
+        'narvar:shipping-protection:action:add-protection',
+        'narvar:shipping-protection:action:remove-protection'
+      ];
+      
+      events.forEach(name => {
+        window.addEventListener(name, (evt) => {
+          log(`Event: ${name}`, 'success');
+          log(`  Detail: ${JSON.stringify(evt.detail)}`);
+        });
+      });
+      
+      // Initialize SDK
+      log('Calling init()...');
+      const configUrl = `data:application/json,${encodeURIComponent(JSON.stringify({
+        retailerMoniker: 'demo-retailer',
+        region: 'us',
+        locale: 'en-US',
+        pricing: { percentage: 5, fixedFee: 0 }
+      }))}`;
+      
+      const initPromise = window.Narvar.ShippingProtection.init({
+        variant: 'toggle',
+        page: 'cart',
+        retailerMoniker: 'demo-retailer',
+        region: 'US',
+        locale: 'en-US',
+        environment: 'qa',
+        configUrl: configUrl
+      });
+      
+      log('init() called, waiting for promise...');
+      
+      initPromise.then(result => {
+        log('init() promise resolved', 'success');
+        log('  Result: ' + JSON.stringify(result));
+        
+        // Call render
+        log('Calling render()...');
+        window.Narvar.ShippingProtection.render({
+          items: [
+            { sku: 'TEST-1', quantity: 1, price: 50 }
+          ],
+          subtotal: 50,
+          currency: 'USD',
+          fees: 5,
+          discounts: 0
+        });
+        log('render() called');
+        
+      }).catch(err => {
+        log('init() promise rejected: ' + err.message, 'error');
+        log('  Stack: ' + err.stack);
+      });
+    }
+  </script>
+</body>
+</html>

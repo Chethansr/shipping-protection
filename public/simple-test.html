@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Simple Test</title>
+  <style>
+    narvar-shipping-protection-widget {
+      border: 3px solid red;
+      padding: 20px;
+      background: yellow;
+      display: block !important;
+      min-height: 200px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Simple Component Test</h1>
+  
+  <p>Before widget</p>
+  <narvar-shipping-protection-widget id="test-widget"></narvar-shipping-protection-widget>
+  <p>After widget</p>
+  
+  <div id="log"></div>
+  
+  <script>
+    window.ShippingProtectionScriptUrl = '/dist/shipping-protection.js';
+  </script>
+  <script src="./loader.js"></script>
+  <script>
+    const log = document.getElementById('log');
+    
+    function addLog(msg) {
+      const p = document.createElement('p');
+      p.textContent = new Date().toISOString() + ': ' + msg;
+      log.appendChild(p);
+    }
+    
+    // Wait a bit then check
+    setTimeout(() => {
+      addLog('Checking component registration...');
+      addLog('customElements.get result: ' + customElements.get('narvar-shipping-protection-widget'));
+      
+      const widget = document.getElementById('test-widget');
+      addLog('Widget element found: ' + !!widget);
+      if (widget) {
+        addLog('Widget tagName: ' + widget.tagName);
+        addLog('Widget shadowRoot: ' + !!widget.shadowRoot);
+        if (widget.shadowRoot) {
+          addLog('Shadow DOM content length: ' + widget.shadowRoot.innerHTML.length);
+        }
+      }
+      
+      addLog('window.Narvar exists: ' + !!window.Narvar);
+      addLog('window.Narvar.ShippingProtection exists: ' + !!(window.Narvar && window.Narvar.ShippingProtection));
+    }, 2000);
+  </script>
+</body>
+</html>

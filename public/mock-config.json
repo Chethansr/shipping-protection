@@ -1,0 +1,9 @@
+{
+  "retailerMoniker": "dp",
+  "region": "US",
+  "locale": "en-US",
+  "pricing": {
+    "percentage": 2.5,
+    "fixedFee": 0
+  }
+}

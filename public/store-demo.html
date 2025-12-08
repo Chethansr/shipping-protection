@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Shipping Protection - Store Demo (TRD Pattern)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root {
+        color-scheme: light;
+      }
+      body {
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        margin: 0;
+        padding: 24px;
+        background: #f4f5f7;
+        color: #0b1530;
+      }
+      h1 {
+        margin-top: 0;
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 24px;
+        max-width: 1200px;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid #d0d7de;
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th, td {
+        text-align: left;
+        padding: 8px;
+      }
+      th {
+        border-bottom: 1px solid #d0d7de;
+        font-weight: 600;
+      }
+      td.actions {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+      }
+      button {
+        padding: 6px 10px;
+        border-radius: 6px;
+        border: 1px solid #d0d7de;
+        background: #fff;
+        cursor: pointer;
+      }
+      button.primary {
+        background: #4c6ef5;
+        color: white;
+        border-color: #4c6ef5;
+      }
+      .line {
+        display: flex;
+        justify-content: space-between;
+        margin: 6px 0;
+      }
+      .total {
+        font-size: 18px;
+        font-weight: 700;
+      }
+      .info {
+        background: #e6fffa;
+        border: 1px solid #bcdad1;
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 24px;
+        font-size: 14px;
+      }
+      .info code {
+        background: #fff;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-family: monospace;
+      }
+      .log {
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+        background: #0b1530;
+        color: #e4f0ff;
+        padding: 12px;
+        border-radius: 8px;
+        max-height: 300px;
+        overflow: auto;
+        font-size: 12px;
+        white-space: pre-wrap;
+        line-height: 1.4;
+      }
+      .status-badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Shipping Protection - Store Demo</h1>
+
+    <div class="info">
+      <strong>TRD Pattern Demo:</strong> This page demonstrates the simple declarative pattern from the TRD.
+      Just load the SDK, call <code>init()</code>, and use <code>&lt;narvar-shipping-protection-widget&gt;</code> web components.
+      The widget handles all event listening and UI updates internally.
+    </div>
+
+    <div style="margin-bottom: 16px;">
+      <span class="status-badge" id="sdk-status" style="background: #eef2ff; color: #4c6ef5;">SDK: INITIALIZING</span>
+      <span class="status-badge" id="env-status" style="background: #f4f5f7; color: #6c757d; margin-left: 8px;">Environment: Loading...</span>
+    </div>
+
+    <div class="layout">
+      <div class="card">
+        <h3>Cart</h3>
+        <table id="cart-table">
+          <thead>
+            <tr><th>Item</th><th>Qty</th><th>Price</th><th>Actions</th></tr>
+          </thead>
+          <tbody id="cart-body"></tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Checkout Summary</h3>
+        <div class="line"><span>Subtotal</span><span id="subtotal">$0.00</span></div>
+        <div class="line"><span>Shipping</span><span id="shipping">$0.00</span></div>
+        <div class="line"><span>Discounts</span><span id="discounts">$0.00</span></div>
+
+        <!-- TRD Pattern: Declarative web component -->
+        <narvar-shipping-protection-widget id="protection-widget"></narvar-shipping-protection-widget>
+
+        <hr />
+        <div class="line total"><span>Total</span><span id="total">$0.00</span></div>
+        <button class="primary" id="btn-checkout">Checkout</button>
+      </div>
+    </div>
+
+    <!-- Logs Section -->
+    <div class="card" style="margin-top: 24px; max-width: 1200px;">
+      <h3>SDK Integration Logs</h3>
+      <div class="log" id="log"></div>
+    </div>
+
+    <!-- Loader Stub -->
+    <script>
+      // Resolve bundle relative to current page
+      window.ShippingProtectionScriptUrl = new URL('../dist/shipping-protection.js', window.location.href).toString();
+    </script>
+    <script src="./loader.js"></script>
+
+    <!-- TRD Pattern: Simple init + declarative components -->
+    <script>
+      // Demo data
+      const shippingFee = 5;
+      const cartItems = [
+        { sku: 'SKU-123', name: 'Canvas Tote', price: 45, quantity: 1 },
+        { sku: 'SKU-456', name: 'Rain Jacket', price: 120, quantity: 1 }
+      ];
+
+      // DOM elements
+      const cartBody = document.getElementById('cart-body');
+      const subtotalEl = document.getElementById('subtotal');
+      const shippingEl = document.getElementById('shipping');
+      const discountsEl = document.getElementById('discounts');
+      const totalEl = document.getElementById('total');
+      const checkoutBtn = document.getElementById('btn-checkout');
+      const protectionWidget = document.getElementById('protection-widget');
+      const logEl = document.getElementById('log');
+      const sdkStatusEl = document.getElementById('sdk-status');
+      const envStatusEl = document.getElementById('env-status');
+
+      let protectionAmount = 0;
+      let protectionSelected = false;
+
+      function log(message, detail = {}) {
+        const entry = `${new Date().toISOString()} - ${message} ${JSON.stringify(detail)}\n`;
+        console.log(message, detail);
+        logEl.textContent += entry;
+        logEl.scrollTop = logEl.scrollHeight;
+      }
+
+      function setStatus(label, color = '#4c6ef5', bg = '#eef2ff') {
+        sdkStatusEl.textContent = `SDK: ${label}`;
+        sdkStatusEl.style.color = color;
+        sdkStatusEl.style.background = bg;
+      }
+
+      function format(amount) {
+        return `$${amount.toFixed(2)}`;
+      }
+
+      function renderCart() {
+        cartBody.innerHTML = '';
+        cartItems.forEach((item, idx) => {
+          const tr = document.createElement('tr');
+          const subtotal = item.price * item.quantity;
+          tr.innerHTML = `
+            <td>${item.name}</td>
+            <td>${item.quantity}</td>
+            <td>${format(subtotal)}</td>
+            <td class="actions">
+              <button data-idx="${idx}" data-delta="-1">-</button>
+              <button data-idx="${idx}" data-delta="1">+</button>
+            </td>
+          `;
+          cartBody.appendChild(tr);
+        });
+      }
+
+      function getCartData() {
+        const subtotal = cartItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
+        return {
+          items: cartItems.map((i) => ({ sku: i.sku, quantity: i.quantity, price: i.price })),
+          subtotal,
+          currency: 'USD',
+          fees: shippingFee,
+          discounts: 0
+        };
+      }
+
+      function calculateProtectionQuote() {
+        // TRD Pattern: Retailer calls render() on every cart change
+        const cartData = getCartData();
+        window.Narvar.ShippingProtection.render(cartData);
+      }
+
+      function updateTotals() {
+        const cartData = getCartData();
+        const subtotal = cartData.subtotal;
+        subtotalEl.textContent = format(subtotal);
+        shippingEl.textContent = format(shippingFee);
+        discountsEl.textContent = format(cartData.discounts || 0);
+        const total = subtotal + shippingFee - (cartData.discounts || 0) + (protectionSelected ? protectionAmount : 0);
+        totalEl.textContent = format(total);
+      }
+
+      // Wire quantity buttons
+      cartBody.addEventListener('click', (e) => {
+        const target = e.target;
+        if (!(target instanceof HTMLButtonElement)) return;
+        const idx = Number(target.dataset.idx);
+        const delta = Number(target.dataset.delta);
+        const item = cartItems[idx];
+        const nextQty = Math.max(0, item.quantity + delta);
+        item.quantity = nextQty || 1;
+        renderCart();
+        calculateProtectionQuote(); // TRD: Call render() on cart change
+        updateTotals();
+      });
+
+      // TRD Pattern: Listen to standard SDK events
+      window.addEventListener('narvar:shipping-protection:state:ready', () => {
+        const env = 'qa';
+        setStatus('READY', '#0f5132', '#e6fffa');
+        envStatusEl.textContent = `Environment: ${env.toUpperCase()}`;
+        envStatusEl.style.color = '#0f5132';
+        envStatusEl.style.background = '#e6fffa';
+        log('sdk:ready', { mode: 'cart', environment: env });
+      });
+
+      window.addEventListener('narvar:shipping-protection:state:quote-available', (e) => {
+        log('quote:available', {
+          amount: e.detail?.quote?.amount,
+          source: e.detail?.quote?.source
+        });
+      });
+
+      window.addEventListener('narvar:shipping-protection:state:error', (e) => {
+        setStatus('ERROR', '#842029', '#ffeaea');
+        log('error', e.detail);
+      });
+
+      window.addEventListener('narvar:shipping-protection:action:add-protection', (e) => {
+        protectionSelected = true;
+        protectionAmount = e.detail?.amount || 0;
+        log('user:add-protection', { amount: protectionAmount });
+        updateTotals();
+      });
+
+      window.addEventListener('narvar:shipping-protection:action:remove-protection', () => {
+        protectionSelected = false;
+        protectionAmount = 0;
+        log('user:remove-protection');
+        updateTotals();
+      });
+
+      checkoutBtn.addEventListener('click', () => {
+        const cartData = getCartData();
+        const checkoutData = {
+          items: cartItems,
+          subtotal: cartData.subtotal,
+          currency: cartData.currency,
+          fees: cartData.fees,
+          discounts: cartData.discounts,
+          protection: protectionSelected ? protectionAmount : 0
+        };
+
+        // Save to sessionStorage for checkout page
+        sessionStorage.setItem('checkout_cart', JSON.stringify(checkoutData));
+
+        console.log('Navigating to checkout:', checkoutData);
+        window.location.href = './checkout-demo.html';
+      });
+
+      // Boot
+      log('page:loaded', { timestamp: Date.now() });
+      renderCart();
+      updateTotals();
+
+      // TRD Pattern: Simple initialization
+      log('sdk:init', { mode: 'cart' });
+      window.Narvar.ShippingProtection.init({
+        variant: 'toggle',
+        page: 'cart',
+        retailerMoniker: 'dp',
+        region: 'US',
+        locale: 'en-US',
+        environment: 'qa',
+        // Demo: inline config via data URL
+        configUrl: `data:application/json,${encodeURIComponent(JSON.stringify({
+          retailerMoniker: 'dp',
+          region: 'us',
+          locale: 'en-US',
+          pricing: { percentage: 5, fixedFee: 0 }
+        }))}`
+      });
+
+      // TRD Pattern: Call render() after init completes (via ready event)
+      // Ready event handler above will log and call calculateProtectionQuote
+      const readyHandler = () => {
+        calculateProtectionQuote();
+      };
+      window.addEventListener('narvar:shipping-protection:state:ready', readyHandler, { once: true });
+    </script>
+  </body>
+</html>

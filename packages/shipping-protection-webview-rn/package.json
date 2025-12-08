@@ -1,0 +1,44 @@
+{
+  "name": "@narvar/shipping-protection-webview-rn",
+  "version": "1.0.0",
+  "description": "React Native WebView wrapper for Narvar Shipping Protection",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "lint": "eslint src --ext .ts,.tsx"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-native": ">=0.64.0",
+    "react-native-webview": "^13.0.0"
+  },
+  "dependencies": {
+    "zod": "^4.1.13"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.0",
+    "@types/react-native": "^0.72.0",
+    "typescript": "^5.3.3",
+    "eslint": "^8.55.0",
+    "@typescript-eslint/eslint-plugin": "^6.14.0",
+    "@typescript-eslint/parser": "^6.14.0"
+  },
+  "keywords": [
+    "react-native",
+    "shipping-protection",
+    "webview",
+    "narvar"
+  ],
+  "author": "Narvar",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/narvar/shipping-protection.git",
+    "directory": "packages/shipping-protection-webview-rn"
+  }
+}

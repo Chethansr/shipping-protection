@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Secure.js Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+        font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+        margin: 0;
+        padding: 24px;
+        background: #f4f5f7;
+        color: #0b1530;
+      }
+      .controls {
+        display: grid;
+        gap: 8px;
+        max-width: 420px;
+        margin-bottom: 16px;
+      }
+      button {
+        padding: 10px 12px;
+        border-radius: 6px;
+        border: 1px solid #d0d7de;
+        background: #ffffff;
+        cursor: pointer;
+      }
+      button.primary {
+        background: #4c6ef5;
+        color: white;
+        border-color: #4c6ef5;
+      }
+      pre {
+        background: #0b1530;
+        color: #e4f0ff;
+        padding: 12px;
+        border-radius: 8px;
+        max-height: 320px;
+        overflow: auto;
+      }
+      #state {
+        padding: 8px 12px;
+        border-radius: 6px;
+        background: #fff;
+        border: 1px solid #d0d7de;
+        display: inline-block;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Secure.js Demo</h1>
+    <p>This page simulates init, quote calculation, and protection selection, and logs state/events.</p>
+
+    <div class="controls">
+      <button id="btn-init" class="primary">Init SDK</button>
+      <button id="btn-quote">Calculate Quote</button>
+      <button id="btn-add">Add Protection</button>
+      <button id="btn-remove">Remove Protection</button>
+    </div>
+
+    <div>Current state: <span id="state">UNINITIALIZED</span></div>
+
+    <h3>Widget</h3>
+    <narvar-secure-widget></narvar-secure-widget>
+
+    <h3>Log</h3>
+    <pre id="log"></pre>
+
+    <script src="../dist/secure.js"></script>
+    <script>
+      const logEl = document.getElementById('log');
+      const stateEl = document.getElementById('state');
+      const btnInit = document.getElementById('btn-init');
+      const btnQuote = document.getElementById('btn-quote');
+      const btnAdd = document.getElementById('btn-add');
+      const btnRemove = document.getElementById('btn-remove');
+
+      const config = {
+        retailerMoniker: 'demo-retailer',
+        region: 'us',
+        locale: 'en-US',
+        pricing: { percentage: 5, fixedFee: 0 }
+      };
+
+      const cart = {
+        items: [
+          { sku: 'SKU-1', quantity: 1, price: 100 },
+          { sku: 'SKU-2', quantity: 2, price: 50 }
+        ],
+        subtotal: 200,
+        currency: 'USD',
+        fees: 0,
+        discounts: 0
+      };
+
+      const configUrl = `data:application/json,${encodeURIComponent(JSON.stringify(config))}`;
+
+      function log(message, detail = {}) {
+        const entry = `${new Date().toISOString()} - ${message} ${JSON.stringify(detail)}\n`;
+        console.log(message, detail);
+        logEl.textContent = entry + logEl.textContent;
+      }
+
+      function setState(next) {
+        stateEl.textContent = next;
+      }
+
+      // Attach listeners to window-level events to trace behavior
+      ['narvar:secure:state:ready', 'narvar:secure:cart:quote-calculated', 'narvar:secure:cart:add-protection', 'narvar:secure:cart:remove-protection', 'narvar:secure:state:error'].forEach((name) => {
+        window.addEventListener(name, (evt) => {
+          log(`event:${name}`, evt.detail || {});
+          if (name === 'narvar:secure:state:ready') setState('READY');
+          if (name === 'narvar:secure:state:error') setState('ERROR');
+          if (name === 'narvar:secure:cart:quote-calculated') setState('QUOTE_AVAILABLE');
+        });
+      });
+
+      btnInit.addEventListener('click', async () => {
+        const result = await NarvarSecure.init({ configUrl });
+        if (result.ok) {
+          log('init:success');
+          setState('READY');
+        } else {
+          log('init:fail', result.error);
+          setState('ERROR');
+        }
+      });
+
+      btnQuote.addEventListener('click', () => {
+        const result = NarvarSecure.render(cart);
+        if (result.ok) {
+          log('quote:success', result.value);
+        } else {
+          log('quote:error', result.error);
+        }
+      });
+
+      btnAdd.addEventListener('click', () => {
+        NarvarSecure.on('narvar:secure:cart:add-protection', () => {});
+        NarvarSecure.render(cart);
+        log('action:add-protection');
+      });
+
+      btnRemove.addEventListener('click', () => {
+        NarvarSecure.on('narvar:secure:cart:remove-protection', () => {});
+        log('action:remove-protection');
+      });
+    </script>
+  </body>
+</html>

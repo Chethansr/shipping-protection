@@ -1,0 +1,13 @@
+@layer NarvarShippingProtection {
+  :host, :root {
+    --narvar-shipping-protection-bg: #ffffff;
+    --narvar-shipping-protection-text: #172b4d;
+    --narvar-shipping-protection-border-color: #dfe1e6;
+    --narvar-shipping-protection-accent: #4c6ef5;
+    --narvar-shipping-protection-font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  }
+}
+
+@layer NarvarShippingProtectionRetailer {
+  /* Retailers can override the above tokens */
+}

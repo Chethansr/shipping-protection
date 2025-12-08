@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Checkout - Shipping Protection Demo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      :root {
+        color-scheme: light;
+      }
+      body {
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        margin: 0;
+        padding: 24px;
+        background: #f4f5f7;
+        color: #0b1530;
+      }
+      h1 {
+        margin-top: 0;
+      }
+      .back-link {
+        display: inline-block;
+        margin-bottom: 16px;
+        color: #4c6ef5;
+        text-decoration: none;
+      }
+      .back-link:hover {
+        text-decoration: underline;
+      }
+      .layout {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 24px;
+      }
+      .card {
+        background: #fff;
+        border: 1px solid #d0d7de;
+        border-radius: 12px;
+        padding: 16px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+      th, td {
+        text-align: left;
+        padding: 8px;
+      }
+      th {
+        border-bottom: 1px solid #d0d7de;
+        font-weight: 600;
+      }
+      button {
+        padding: 8px 16px;
+        border-radius: 6px;
+        border: 1px solid #d0d7de;
+        background: #fff;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      button.primary {
+        background: #4c6ef5;
+        color: white;
+        border-color: #4c6ef5;
+        font-weight: 600;
+      }
+      button.primary:hover {
+        background: #3b5bdb;
+      }
+      .line {
+        display: flex;
+        justify-content: space-between;
+        margin: 8px 0;
+        font-size: 14px;
+      }
+      .line.total {
+        font-size: 18px;
+        font-weight: 700;
+        margin-top: 16px;
+        padding-top: 12px;
+        border-top: 2px solid #0b1530;
+      }
+      .protection-section {
+        background: #f0f4ff;
+        padding: 16px;
+        border-radius: 8px;
+        margin: 16px 0;
+        border: 2px solid #4c6ef5;
+      }
+      .protection-section.loading {
+        opacity: 0.6;
+      }
+      .protection-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 4px 10px;
+        border-radius: 12px;
+        background: #e6fffa;
+        color: #0f5132;
+        font-size: 12px;
+        font-weight: 600;
+        border: 1px solid #bcdad1;
+      }
+      .protection-badge.server {
+        background: #e7f5ff;
+        color: #1971c2;
+        border-color: #74c0fc;
+      }
+      .protection-badge.ineligible {
+        background: #fff5f5;
+        color: #c92a2a;
+        border-color: #ffc9c9;
+      }
+      .protection-badge.verified {
+        background: #d3f9d8;
+        color: #2b8a3e;
+        border-color: #8ce99a;
+      }
+      .log {
+        font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+        background: #0b1530;
+        color: #e4f0ff;
+        padding: 12px;
+        border-radius: 8px;
+        max-height: 300px;
+        overflow: auto;
+        font-size: 12px;
+        white-space: pre-wrap;
+        line-height: 1.4;
+      }
+      .status {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 10px;
+        border-radius: 8px;
+        background: #eef2ff;
+        color: #1f2a44;
+        border: 1px solid #d0d7de;
+        font-size: 14px;
+      }
+      .status.ready {
+        background: #e6fffa;
+        color: #0f5132;
+        border-color: #bcdad1;
+      }
+      .status.error {
+        background: #ffeaea;
+        color: #842029;
+        border-color: #f5c2c7;
+      }
+      .checkout-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <a href="./store-demo.html" class="back-link">← Back to Cart</a>
+    <h1>Checkout - Shipping Protection</h1>
+    <p>
+      <strong>Server-Side Quote Mode:</strong> This page uses edge compute integration with cryptographically signed quotes.
+    </p>
+    <div class="status" id="sdk-status">SDK: UNINITIALIZED</div>
+    <div class="status" id="env-status" style="margin-left: 8px;">Environment: Loading...</div>
+
+    <div class="layout">
+      <div class="card">
+        <h3>Order Summary</h3>
+        <table id="order-table">
+          <thead>
+            <tr><th>Item</th><th>Qty</th><th>Price</th></tr>
+          </thead>
+          <tbody id="order-body"></tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Payment Summary</h3>
+        <div class="line"><span>Subtotal</span><span id="subtotal">$0.00</span></div>
+        <div class="line"><span>Shipping</span><span id="shipping">$0.00</span></div>
+
+        <!-- TRD Pattern: Declarative web component -->
+        <div style="margin: 16px 0;">
+          <narvar-shipping-protection-widget id="protection-widget"></narvar-shipping-protection-widget>
+        </div>
+        <div id="verification-status" style="margin-top: 12px; display: none;"></div>
+
+        <div class="line total"><span>Total</span><span id="total">$0.00</span></div>
+
+        <div class="checkout-actions">
+          <button class="primary" id="btn-place-order">Place Order</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top: 24px;">
+      <h3>Edge Integration Logs</h3>
+      <div class="log" id="log"></div>
+    </div>
+
+    <script>
+      // Resolve bundle relative to current page
+      window.ShippingProtectionScriptUrl = new URL('../dist/shipping-protection.js', window.location.href).toString();
+    </script>
+    <script src="./loader.js"></script>
+    <script>
+      const logEl = document.getElementById('log');
+      const orderBody = document.getElementById('order-body');
+      const subtotalEl = document.getElementById('subtotal');
+      const shippingEl = document.getElementById('shipping');
+      const totalEl = document.getElementById('total');
+      const statusEl = document.getElementById('sdk-status');
+      const envStatusEl = document.getElementById('env-status');
+      const verificationStatus = document.getElementById('verification-status');
+      const placeOrderBtn = document.getElementById('btn-place-order');
+
+      let cartData = null;
+      let shippingFee = 5;
+      let protectionQuote = null;
+      let protectionSelected = true; // Default to selected on checkout
+
+      function log(message, detail = {}) {
+        const entry = `${new Date().toISOString()} - ${message} ${JSON.stringify(detail)}\n`;
+        console.log(message, detail);
+        logEl.textContent += entry;
+        logEl.scrollTop = logEl.scrollHeight;
+      }
+
+      function format(amount) {
+        return `$${amount.toFixed(2)}`;
+      }
+
+      function loadCartFromSession() {
+        const saved = sessionStorage.getItem('checkout_cart');
+        if (!saved) {
+          log('error:no-cart-data', { message: 'No cart data found. Redirecting to cart page...' });
+          setTimeout(() => window.location.href = './store-demo.html', 2000);
+          return null;
+        }
+        return JSON.parse(saved);
+      }
+
+      function renderOrder() {
+        if (!cartData) return;
+
+        orderBody.innerHTML = '';
+        cartData.items.forEach(item => {
+          const tr = document.createElement('tr');
+          const subtotal = item.price * item.quantity;
+          tr.innerHTML = `
+            <td>${item.name}</td>
+            <td>${item.quantity}</td>
+            <td>${format(subtotal)}</td>
+          `;
+          orderBody.appendChild(tr);
+        });
+      }
+
+      function updateTotals() {
+        if (!cartData) return;
+
+        const subtotal = cartData.subtotal;
+        subtotalEl.textContent = format(subtotal);
+        shippingEl.textContent = format(shippingFee);
+
+        const protectionAmount = (protectionSelected && protectionQuote) ? protectionQuote.amount : 0;
+        const total = subtotal + shippingFee + protectionAmount;
+        totalEl.textContent = format(total);
+      }
+
+      function setStatus(label, stateClass = '') {
+        statusEl.textContent = `SDK: ${label}`;
+        statusEl.className = `status ${stateClass}`;
+      }
+
+
+      async function initCheckout() {
+        // Load cart data
+        const saved = loadCartFromSession();
+        if (!saved) return;
+
+        cartData = {
+          items: saved.items,
+          subtotal: saved.subtotal,
+          currency: saved.currency || 'USD',
+          fees: saved.fees || 0,
+          discounts: saved.discounts || 0
+        };
+
+        log('cart-data-loaded', { items: cartData.items.length, subtotal: cartData.subtotal });
+
+        renderOrder();
+        updateTotals();
+
+        // Initialize SDK in checkout mode
+        setStatus('INITIALIZING');
+
+        // Set environment status early
+        const env = 'qa';
+        envStatusEl.textContent = `Environment: ${env.toUpperCase()}`;
+        envStatusEl.className = 'status ready';
+
+        log('sdk:init-start', { mode: 'checkout' });
+
+        // DEMO SETUP: Using data URL for self-contained demo (no server needed)
+        // PRODUCTION: Omit configUrl - SDK auto-fetches from edge:
+        //   https://edge-compute-f.{retailerMoniker}.domain-ship.{env-domain}/v1/config/{retailerMoniker}
+        //   Example: https://edge-compute-f.dp.domain-ship.qa20.narvar.qa/v1/config/dp
+        const config = {
+          retailerMoniker: 'dp',
+          region: 'us',
+          locale: 'en-US',
+          pricing: { percentage: 5, fixedFee: 0 }
+        };
+        const configUrl = `data:application/json,${encodeURIComponent(JSON.stringify(config))}`;
+
+        // SDK config - CHECKOUT MODE for edge integration (server-side quotes with signature)
+        window.sdkConfig = {
+          variant: 'toggle',
+          page: 'checkout', // ← Server-side edge quotes with JWS signature
+          retailerMoniker: 'dp',
+          region: 'US',
+          locale: 'en-US',
+          environment: 'qa',
+          configUrl: configUrl // DEMO ONLY: In production, omit this - SDK auto-derives from retailerMoniker + environment
+        };
+
+        // TRD event-driven pattern: fire-and-forget init
+        // Listen to 'ready' or 'error' events for completion (handled above)
+        window.Narvar.ShippingProtection.init(window.sdkConfig);
+      }
+
+      function calculateQuote() {
+        log('quote:request-start', { source: 'edge-api' });
+
+        // TRD-compliant: fire-and-forget, results come via events
+        window.Narvar.ShippingProtection.render(cartData);
+      }
+
+      async function verifyQuote(signature) {
+        if (!signature || !signature.jws) {
+          log('verify:skip', { reason: 'no-signature' });
+          return { ok: true, skipReason: 'no-signature' };
+        }
+
+        // Fetch JWKS from edge service
+        const env = 'qa';
+        const baseUrls = {
+          qa: 'https://edge-compute-f.dp.domain-ship.qa20.narvar.qa',
+          st: 'https://edge-compute-f.dp.domain-ship.st20.narvar.qa',
+          prod: 'https://edge-compute-f.dp.domain-ship.narvar.com'
+        };
+        const jwksUrl = `${baseUrls[env]}/.well-known/jwks.json`;
+
+        log('verify:jwks-fetch', { url: jwksUrl });
+
+        try {
+          // Fetch JWKS
+          const jwksResponse = await fetch(jwksUrl);
+          if (!jwksResponse.ok) {
+            throw new Error(`Failed to fetch JWKS: ${jwksResponse.status}`);
+          }
+          const jwks = await jwksResponse.json();
+          log('verify:jwks-success', { keys_count: jwks.keys?.length });
+
+          // Parse JWS (format: header.payload.signature)
+          const jws = signature.jws;
+          const parts = jws.split('.');
+          if (parts.length !== 3) {
+            throw new Error('Invalid JWS format');
+          }
+
+          // Decode header to get kid
+          const headerJson = atob(parts[0].replace(/-/g, '+').replace(/_/g, '/'));
+          const header = JSON.parse(headerJson);
+          log('verify:jws-header', { alg: header.alg, kid: header.kid });
+
+          // Find matching key in JWKS
+          const jwk = jwks.keys.find(k => k.kid === header.kid);
+          if (!jwk) {
+            throw new Error(`Key not found in JWKS: ${header.kid}`);
+          }
+          log('verify:key-found', { kid: jwk.kid, kty: jwk.kty, crv: jwk.crv });
+
+          // Import public key from JWK
+          const publicKey = await crypto.subtle.importKey(
+            'jwk',
+            jwk,
+            { name: 'ECDSA', namedCurve: 'P-256' },
+            false,
+            ['verify']
+          );
+
+          // Prepare data to verify (header.payload)
+          const dataToVerify = new TextEncoder().encode(parts[0] + '.' + parts[1]);
+
+          // Decode signature from base64url
+          const signatureBytes = Uint8Array.from(
+            atob(parts[2].replace(/-/g, '+').replace(/_/g, '/')),
+            c => c.charCodeAt(0)
+          );
+
+          // Verify signature
+          const isValid = await crypto.subtle.verify(
+            { name: 'ECDSA', hash: 'SHA-256' },
+            publicKey,
+            signatureBytes,
+            dataToVerify
+          );
+
+          // Decode payload
+          const payloadJson = atob(parts[1].replace(/-/g, '+').replace(/_/g, '/'));
+          const payload = JSON.parse(payloadJson);
+
+          log('verify:success', {
+            valid: isValid,
+            payload: {
+              iat: new Date(payload.iat * 1000).toISOString(),
+              exp: new Date(payload.exp * 1000).toISOString(),
+              premium_value: payload.quote?.premium_value
+            }
+          });
+
+          return {
+            ok: true,
+            result: { valid: isValid, payload }
+          };
+        } catch (e) {
+          log('verify:error', { error: e.message });
+          return { ok: false, error: e.message };
+        }
+      }
+
+      // Event listeners
+      placeOrderBtn.addEventListener('click', async () => {
+        // Verify quote signature if present
+        if (protectionSelected && protectionQuote && protectionQuote.signature) {
+          placeOrderBtn.disabled = true;
+          placeOrderBtn.textContent = 'Verifying...';
+
+          // Show verification UI
+          verificationStatus.style.display = 'block';
+          verificationStatus.innerHTML = '<p style="margin: 0; font-size: 13px; color: #495057;">🔍 Verifying signature...</p>';
+
+          const verification = await verifyQuote(protectionQuote.signature);
+
+          if (!verification.ok) {
+            verificationStatus.innerHTML = `
+              <span class="protection-badge ineligible">❌ Verification Failed</span>
+              <p style="margin: 4px 0 0 0; font-size: 12px; color: #c92a2a;">${verification.error}</p>
+            `;
+            alert(`Quote verification failed: ${verification.error}\n\nCannot place order with unverified protection.`);
+            placeOrderBtn.disabled = false;
+            placeOrderBtn.textContent = `Place Order (${format(protectionQuote.amount)})`;
+            return;
+          }
+
+          if (verification.result && !verification.result.valid) {
+            verificationStatus.innerHTML = `
+              <span class="protection-badge ineligible">⚠️ Invalid Signature</span>
+              <p style="margin: 4px 0 0 0; font-size: 12px; color: #c92a2a;">
+                Quote signature is invalid - may have been tampered with
+              </p>
+            `;
+            alert('Quote signature is invalid. The quote may have been tampered with.\n\nCannot place order.');
+            placeOrderBtn.disabled = false;
+            placeOrderBtn.textContent = `Place Order (${format(protectionQuote.amount)})`;
+            return;
+          }
+
+          // Success!
+          verificationStatus.innerHTML = `
+            <span class="protection-badge verified">✅ Signature Verified</span>
+            <p style="margin: 4px 0 0 0; font-size: 12px; color: #2b8a3e;">
+              Quote cryptographically verified - proceeding with order
+            </p>
+          `;
+          log('verify:order-approved', { verified: true });
+        }
+
+        const orderData = {
+          items: cartData.items,
+          subtotal: cartData.subtotal,
+          shipping: shippingFee,
+          protection: protectionSelected && protectionQuote ? {
+            amount: protectionQuote.amount,
+            quote: protectionQuote,
+            verified: !!protectionQuote.signature
+          } : null,
+          total: cartData.subtotal + shippingFee + (protectionSelected && protectionQuote ? protectionQuote.amount : 0)
+        };
+
+        log('order:placed', orderData);
+        alert('Order placed successfully! Check logs for verification and JWS signature details.');
+
+        // Clear cart
+        sessionStorage.removeItem('checkout_cart');
+        setTimeout(() => window.location.href = './store-demo.html', 1000);
+      });
+
+      // Listen to widget events for protection selection
+      window.addEventListener('narvar:shipping-protection:action:add-protection', (evt) => {
+        protectionSelected = true;
+        log('protection:added', { amount: evt.detail?.amount });
+        updateTotals();
+      });
+
+      window.addEventListener('narvar:shipping-protection:action:remove-protection', () => {
+        protectionSelected = false;
+        log('protection:removed');
+        updateTotals();
+      });
+
+      // Event hooks for TRD-compliant event-driven pattern
+      ['narvar:shipping-protection:state:ready', 'narvar:shipping-protection:state:quote-available', 'narvar:shipping-protection:action:add-protection', 'narvar:shipping-protection:action:remove-protection', 'narvar:shipping-protection:state:error'].forEach((name) => {
+        window.addEventListener(name, async (evt) => {
+          log(`event:${name}`, evt.detail || {});
+
+          if (name === 'narvar:shipping-protection:state:ready') {
+            // SDK initialization complete - now calculate initial quote
+            setStatus('READY', 'ready');
+            calculateQuote();
+          }
+
+          if (name === 'narvar:shipping-protection:state:quote-available') {
+            // Update protection quote from event
+            protectionQuote = evt.detail.quote;
+            log('quote:success', {
+              amount: protectionQuote.amount,
+              source: protectionQuote.source,
+              eligible: protectionQuote.eligible,
+              signature: protectionQuote.signature ? {
+                jws: protectionQuote.signature.jws.substring(0, 50) + '...',
+                created_at: new Date(protectionQuote.signature.created_at * 1000).toISOString(),
+                expires_at: new Date(protectionQuote.signature.expires_at * 1000).toISOString()
+              } : 'none',
+              ineligible_reason: protectionQuote.ineligible_reason
+            });
+
+            // Show signature info (verification happens at order placement)
+            if (protectionQuote.signature && protectionQuote.eligible !== false) {
+              verificationStatus.style.display = 'block';
+              verificationStatus.innerHTML = `
+                <p style="margin: 0; font-size: 13px; color: #495057;">
+                  🔐 Signed quote received. Signature will be verified before order placement.
+                </p>
+              `;
+            }
+          }
+
+          if (name === 'narvar:shipping-protection:state:error') {
+            setStatus('ERROR', 'error');
+          }
+        });
+      });
+
+      // Boot
+      log('checkout:page-loaded', { timestamp: Date.now() });
+      initCheckout();
+    </script>
+  </body>
+</html>

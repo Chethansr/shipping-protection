@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Narvar Shipping Protection</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: transparent;
+      overflow: hidden;
+    }
+    #widget-container {
+      padding: 0;
+    }
+  </style>
+</head>
+<body>
+  <div id="widget-container">
+    <narvar-shipping-protection-widget></narvar-shipping-protection-widget>
+  </div>
+
+  <!-- Load SDK directly -->
+  <script src="./dist/shipping-protection.js"></script>
+
+  <!-- Bridge Adapter: Connects React Native WebView with shipping-protection.js -->
+  <script>
+    (function() {
+      console.log('[WebView Bridge] Initializing...');
+
+      // Wait for SDK to be available
+      function waitForSDK() {
+        return new Promise((resolve) => {
+          const check = () => {
+            if (window.Narvar && window.Narvar.ShippingProtection) {
+              resolve();
+            } else {
+              setTimeout(check, 50);
+            }
+          };
+          check();
+        });
+      }
+
+      waitForSDK().then(() => {
+        const sdk = window.Narvar.ShippingProtection;
+        console.log('[WebView Bridge] SDK loaded, version:', sdk.getVersion());
+
+        /**
+         * Auto-resize WebView based on content height
+         */
+        function notifyHeightChange() {
+          const height = document.body.scrollHeight;
+          sendToHost({ type: 'height-change', payload: { height } });
+        }
+
+        /**
+         * Send message to React Native host
+         */
+        function sendToHost(message) {
+          if (window.ReactNativeWebView) {
+            const envelope = {
+              source: 'narvar-shipping-protection-widget',
+              version: '1.0',
+              message
+            };
+            window.ReactNativeWebView.postMessage(JSON.stringify(envelope));
+            console.log('[WebView Bridge] Sent to host:', message.type);
+          } else {
+            console.warn('[WebView Bridge] ReactNativeWebView not available');
+          }
+        }
+
+        /**
+         * Serialize error for cross-boundary communication
+         */
+        function serializeError(error) {
+          return {
+            category: error.category || 'UNKNOWN_ERROR',
+            message: error.message || 'Unknown error',
+            retryable: error.retryable || false
+          };
+        }
+
+        /**
+         * Pass cart data directly to SDK
+         * SDK expects: { items: [{ sku, quantity, price }], subtotal, currency, fees?, discounts? }
+         * Prices in dollars (SDK converts to cents internally for edge API)
+         */
+        function convertCartData(cartData) {
+          return {
+            items: cartData.items.map(item => ({
+              sku: item.sku,
+              quantity: item.quantity,
+              price: item.price
+            })),
+            subtotal: cartData.subtotal,
+            currency: cartData.currency,
+            fees: cartData.fees,
+            discounts: cartData.discounts
+          };
+        }
+
+        /**
+         * Listen for messages from React Native
+         */
+        window.addEventListener('message', async (event) => {
+          try {
+            const { source, message } = event.data;
+            if (source !== 'narvar-shipping-protection-host') return;
+
+            console.log('[WebView Bridge] Received from host:', message.type);
+
+            switch (message.type) {
+              case 'init':
+                console.log('[WebView Bridge] Initializing SDK with config:', message.payload);
+                sdk.init(message.payload);
+                // SDK will emit 'ready' or 'error' events which we handle below
+                break;
+
+              case 'render':
+                console.log('[WebView Bridge] Rendering cart:', message.payload);
+                const convertedCart = convertCartData(message.payload);
+                console.log('[WebView Bridge] Converted cart:', convertedCart);
+                sdk.render(convertedCart);
+                // Height may change after render, notify with delay
+                setTimeout(notifyHeightChange, 100);
+                break;
+
+              case 'set-customer-identity':
+                console.log('[WebView Bridge] Setting customer identity');
+                sdk.setCustomerIdentity(message.payload);
+                break;
+
+              case 'destroy':
+                console.log('[WebView Bridge] Destroying SDK');
+                sdk.destroy();
+                break;
+
+              default:
+                console.warn('[WebView Bridge] Unknown message type:', message.type);
+            }
+          } catch (error) {
+            console.error('[WebView Bridge] Error handling message:', error);
+            sendToHost({ type: 'error', payload: { error: serializeError(error) } });
+          }
+        });
+
+        /**
+         * Forward SDK events to React Native
+         */
+        sdk.on('narvar:shipping-protection:state:ready', (evt) => {
+          console.log('[WebView Bridge] SDK ready');
+          sendToHost({ type: 'ready', payload: { version: sdk.getVersion() } });
+          notifyHeightChange();
+        });
+
+        sdk.on('narvar:shipping-protection:state:quote-available', (evt) => {
+          console.log('[WebView Bridge] Quote available:', evt.detail);
+          sendToHost({ type: 'quote-available', payload: { quote: evt.detail.quote } });
+          notifyHeightChange();
+        });
+
+        window.addEventListener('narvar:shipping-protection:action:add-protection', (evt) => {
+          console.log('[WebView Bridge] Protection added:', evt.detail);
+          sendToHost({ type: 'add-protection', payload: evt.detail });
+        });
+
+        window.addEventListener('narvar:shipping-protection:action:remove-protection', (evt) => {
+          console.log('[WebView Bridge] Protection removed');
+          sendToHost({ type: 'remove-protection', payload: {} });
+        });
+
+        sdk.on('narvar:shipping-protection:state:error', (evt) => {
+          console.error('[WebView Bridge] SDK error:', evt.detail);
+          sendToHost({ type: 'error', payload: { error: serializeError(evt.detail.error) } });
+        });
+
+        /**
+         * Observe DOM changes for height updates
+         */
+        const observer = new ResizeObserver(() => {
+          notifyHeightChange();
+        });
+        observer.observe(document.body);
+
+        console.log('[WebView Bridge] Ready to receive messages');
+      });
+    })();
+  </script>
+</body>
+</html>
