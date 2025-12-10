@@ -10,7 +10,11 @@
   "scripts": {
     "build": "tsc",
     "test": "jest",
-    "lint": "eslint src --ext .ts,.tsx"
+    "lint": "eslint src --ext .ts,.tsx",
+    "dev": "cd test-apps/webview-test && npm start",
+    "dev:ios": "cd test-apps/webview-test && npm run ios",
+    "dev:android": "cd test-apps/webview-test && npm run android",
+    "dev:web": "cd test-apps/webview-test && npm run web"
   },
   "peerDependencies": {
     "react": "^18.0.0",
@@ -39,6 +43,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/narvar/shipping-protection.git",
-    "directory": "packages/shipping-protection-webview-rn"
+    "directory": "mobile/webview"
   }
 }

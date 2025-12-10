@@ -1,7 +1,32 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git tag:*)"
+      "Bash(git tag:*)",
+      "Bash(npx create-expo-app:*)",
+      "Bash(npm install:*)",
+      "Bash(npm start)",
+      "Bash(npx tsc:*)",
+      "Bash(npx expo start:*)",
+      "Bash(watchman watch-del:*)",
+      "Bash(watchman watch-project:*)",
+      "Bash(npx expo run:ios:*)",
+      "Bash(kill:*)",
+      "Bash(pkill:*)",
+      "Bash(lsof:*)",
+      "Bash(xargs kill:*)",
+      "Bash(curl:*)",
+      "Bash(xcrun simctl:*)",
+      "Bash(watchman watch-del-all:*)",
+      "Bash(ls:*)",
+      "Bash(source:*)",
+      "Bash(chmod:*)",
+      "Bash(/tmp/test-shopify-api.sh)",
+      "Bash(/tmp/test-shopify-api-raw.sh)",
+      "Bash(tee:*)",
+      "Bash(osascript:*)",
+      "Bash(cat:*)",
+      "WebSearch",
+      "WebFetch(domain:narvar.atlassian.net)"
     ],
     "deny": [],
     "ask": []
