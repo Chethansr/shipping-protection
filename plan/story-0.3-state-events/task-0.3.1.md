@@ -18,10 +18,6 @@ Define the state machine types using discriminated unions and implement the stat
 - ✅ Reducer is pure (no side effects)
 - ✅ 100% test coverage for all transitions
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Testing Strategy
 - Test UNINITIALIZED transitions to INITIALIZING
 - Test prevents invalid transitions

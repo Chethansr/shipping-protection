@@ -17,10 +17,6 @@ Define a comprehensive WidgetError taxonomy using discriminated unions. Create f
 - ✅ Errors are JSON-serializable
 - ✅ 100% type coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Testing Strategy
 - Test ConfigError structure
 - Test NetworkError preserves HTTP details

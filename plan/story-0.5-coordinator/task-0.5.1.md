@@ -19,10 +19,6 @@ Create the Coordinator factory function that initializes and connects all SDK su
 - ✅ Returns Result from init()
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Coordinator Interface
 ```typescript
 interface Coordinator {

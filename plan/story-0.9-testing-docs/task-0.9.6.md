@@ -21,10 +21,6 @@ Set up continuous integration pipeline to enforce quality gates. Run tests, chec
 - ✅ Failed checks block PRs
 - ✅ Status badges in README
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## CI Pipeline Steps
 1. **Checkout code**
 2. **Install dependencies**

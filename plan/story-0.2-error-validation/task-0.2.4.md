@@ -19,10 +19,6 @@ Create Zod validation schemas for CartData structure, including cart items, subt
 - ✅ Validation errors are descriptive
 - ✅ 100% test coverage for edge cases
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Testing Strategy
 - Test accepts valid cart
 - Test rejects empty items array

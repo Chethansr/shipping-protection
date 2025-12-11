@@ -18,10 +18,6 @@ Implement the core pricing logic that supports multiple calculation methods: per
 - ✅ Proper rounding (2 decimal places for currency)
 - ✅ 100% test coverage for all pricing models
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Pricing Models
 1. **Percentage**: 5% of cart subtotal
 2. **Fixed**: $4.99 regardless of cart value

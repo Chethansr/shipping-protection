@@ -20,10 +20,6 @@ Implement different display variants for the widget: toggle and checkbox. Each v
 - ✅ Both variants keyboard accessible
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Variant Content
 **Toggle:**
 - Switch control (on/off)

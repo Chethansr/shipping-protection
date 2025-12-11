@@ -17,10 +17,6 @@ Implement exponential backoff algorithm for retries. Use delays of 1s, 2s, 4s wi
 - ✅ Prevents thundering herd
 - ✅ 100% test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Backoff Algorithm
 ```typescript
 function calculateBackoff(retryCount: number): number {

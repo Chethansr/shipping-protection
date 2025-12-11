@@ -18,10 +18,6 @@ Set up CSS @layer architecture to control cascade order. Create base layer for S
 - ✅ Documentation explains layer usage
 - ✅ Works in all supported browsers
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Layer Structure
 ```css
 @layer NarvarShippingProtection, NarvarShippingProtectionRetailer;

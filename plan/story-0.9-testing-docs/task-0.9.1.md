@@ -23,10 +23,6 @@ Create comprehensive end-to-end tests using Playwright. Test all user flows from
 - ✅ Event emission test passes
 - ✅ Tests run in CI
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Test Scenarios
 1. **Happy path**: Init → Render → Calculate → Select → Add event
 2. **Declination**: Init → Render → Calculate → Decline → Remove event

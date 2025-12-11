@@ -20,10 +20,6 @@ Implement the complete quote calculation flow within the Coordinator. Handle car
 - ✅ Handles validation and calculation errors
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Quote Calculation Steps
 1. Validate cart data (Zod schema)
 2. Transition to CALCULATING state

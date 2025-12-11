@@ -19,10 +19,6 @@ Create the default theme with sensible fallback values for all CSS custom proper
 - ✅ Widget looks professional by default
 - ✅ Works without customization
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Default Color Palette
 - Primary: Blue (#0066cc)
 - Background: White (#ffffff)

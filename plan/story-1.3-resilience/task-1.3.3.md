@@ -18,10 +18,6 @@ Create an error logging service that sends errors to the backend for monitoring 
 - ✅ PII redacted from logs
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Rate Limiting
 - Token bucket algorithm
 - Max 10 errors per minute

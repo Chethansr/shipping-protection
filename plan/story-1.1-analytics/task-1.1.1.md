@@ -18,10 +18,6 @@ Create the analytics service factory that initializes the noflake SDK integratio
 - ✅ Service can be disabled via config
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Testing Strategy
 - Test service initialization
 - Test track() method

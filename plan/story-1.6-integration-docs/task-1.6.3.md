@@ -21,10 +21,6 @@ Update all documentation for Phase 1 features. Document new API methods (setCust
 - ✅ Translations guide added
 - ✅ Migration guide from Phase 0 to Phase 1
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## New Documentation Sections
 **API Reference Updates:**
 - setCustomerIdentity(customerId: string)

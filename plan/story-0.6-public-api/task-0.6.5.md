@@ -18,10 +18,6 @@ Implement timeout protection for the init() method to prevent hanging initializa
 - ✅ Timeout cleanup on success
 - ✅ 100% test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Idempotency Pattern
 ```typescript
 let initPromise: Promise<void> | null = null;

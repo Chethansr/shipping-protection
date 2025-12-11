@@ -18,10 +18,6 @@ Enable retailers to override default theme values by providing their own CSS cus
 - ✅ Customization guide documented
 - ✅ Overrides don't break layout
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Override Pattern
 ```css
 @layer NarvarShippingProtectionRetailer {

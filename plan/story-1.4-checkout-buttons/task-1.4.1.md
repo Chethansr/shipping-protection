@@ -18,10 +18,6 @@ Create the narvar-secure-buttons Lit web component that renders dual CTAs for ch
 - ✅ Custom element registered as narvar-secure-buttons
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Component Properties
 - `quote`: Quote | null
 - `isLoading`: boolean

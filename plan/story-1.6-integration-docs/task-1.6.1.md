@@ -20,10 +20,6 @@ Create comprehensive integration tests that exercise all Phase 1 features togeth
 - ✅ Cross-feature scenarios tested
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Integration Scenarios
 1. **Analytics + Experiments**: User assigned to experiment, tracked
 2. **Resilience + Analytics**: Network error, retry, success logged

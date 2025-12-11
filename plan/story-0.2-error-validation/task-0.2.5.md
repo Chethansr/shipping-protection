@@ -19,10 +19,6 @@ Update safe wrapper functions (safeFetch, safeJsonParse, safeJsonStringify) to r
 - ✅ Integration tests cover error propagation
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Testing Strategy
 - Test safeFetch returns NetworkError on timeout
 - Test safeFetch returns NetworkError on 404

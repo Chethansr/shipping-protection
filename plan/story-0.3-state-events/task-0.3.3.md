@@ -18,10 +18,6 @@ Create an event bus using CustomEvents for publish/subscribe communication. The 
 - ✅ Unsubscribe prevents memory leaks
 - ✅ 100% test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Testing Strategy
 - Test on() subscribes to events
 - Test off() unsubscribes from events

@@ -20,10 +20,6 @@ Create the base Lit component structure for `narvar-shipping-protection-widget`.
 - ✅ TypeScript types declared
 - ✅ 100% test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Component Properties
 - `variant`: 'toggle' | 'checkbox'
 - `quote`: Quote | null

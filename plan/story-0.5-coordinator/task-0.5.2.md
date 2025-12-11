@@ -18,10 +18,6 @@ Implement state management within the Coordinator. Provide methods to dispatch a
 - ✅ State history maintained (for debugging)
 - ✅ 100% test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## State Transition Events
 - UNINITIALIZED → INITIALIZING: (internal, no event)
 - INITIALIZING → READY: emit `narvar:shipping-protection:state:ready`

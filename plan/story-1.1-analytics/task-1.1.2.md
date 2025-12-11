@@ -19,10 +19,6 @@ Implement user identity resolution using userprint for fingerprinting and uuidv7
 - ✅ Privacy-compliant (no PII in fingerprint)
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Identity Structure
 ```typescript
 {

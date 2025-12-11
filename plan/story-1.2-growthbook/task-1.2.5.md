@@ -18,10 +18,6 @@ Integrate Growthbook features into web components. Allow feature flags to contro
 - ✅ No component crashes on feature errors
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Feature-Controlled Behaviors
 - **widgetVariant**: 'toggle' | 'checkbox' → controls component type
 - **showCoverageDetails**: boolean → shows/hides details

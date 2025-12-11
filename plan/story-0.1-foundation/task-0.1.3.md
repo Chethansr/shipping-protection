@@ -19,10 +19,6 @@ Create safe wrapper functions for common operations that can throw: JSON parsing
 - ✅ 100% test coverage including error cases
 - ✅ Type inference works for generic parameters
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Testing Strategy
 - Test safeJsonParse with invalid JSON
 - Test safeFetch with timeout

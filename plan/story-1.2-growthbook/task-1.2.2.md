@@ -18,10 +18,6 @@ Implement feature loading from Growthbook API with timeout handling. Ensure feat
 - ✅ Defaults used if load fails
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Loading Flow
 1. Start feature load in parallel with config load
 2. Wait for features (with timeout)

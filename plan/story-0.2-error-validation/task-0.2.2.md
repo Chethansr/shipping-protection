@@ -18,10 +18,6 @@ Create factory functions for constructing WidgetError instances and type guards 
 - ✅ Factory functions add timestamps automatically
 - ✅ 100% test coverage including edge cases
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Testing Strategy
 - Test createConfigError includes validation errors
 - Test isRetryable identifies network errors

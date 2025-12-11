@@ -20,10 +20,6 @@ Set up the project structure with Vite build system, TypeScript configuration, V
 - ✅ No source maps in production build
 - ✅ Build output is CSP-compliant (no eval, no inline scripts)
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Testing Strategy
 - Verify dev server starts and hot-reload works
 - Build production bundle and inspect output

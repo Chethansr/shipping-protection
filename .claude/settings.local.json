@@ -26,7 +26,12 @@
       "Bash(osascript:*)",
       "Bash(cat:*)",
       "WebSearch",
-      "WebFetch(domain:narvar.atlassian.net)"
+      "WebFetch(domain:narvar.atlassian.net)",
+      "Bash(npx markdownlint:*)",
+      "Bash(grep:*)",
+      "Bash(npx --yes markdownlint-cli:*)",
+      "Bash(node -e:*)",
+      "Bash(node:*)"
     ],
     "deny": [],
     "ask": []

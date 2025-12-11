@@ -22,10 +22,6 @@ Define all CSS custom properties (variables) for design tokens. Cover colors, ty
 - ✅ Z-index tokens defined
 - ✅ Variables documented
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Token Categories
 **Colors:**
 - Primary, secondary, accent

@@ -18,10 +18,6 @@ Implement server-side quote calculation for checkout page. Server validates cart
 - ✅ Prevents price manipulation
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Server Quote Flow
 1. Client sends cart data to server
 2. Server validates cart

@@ -25,10 +25,6 @@ Create and complete a comprehensive production readiness checklist. Validate all
 - ✅ Rollback plan documented
 - ✅ Deployment runbook created
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Production Checklist
 
 ### Code Quality

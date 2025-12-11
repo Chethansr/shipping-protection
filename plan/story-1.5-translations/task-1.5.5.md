@@ -20,10 +20,6 @@ Create comprehensive tests for translations across multiple locales. Test en-US,
 - ✅ Components render correctly in all locales
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Test Translations
 **English (en-US):**
 - widget.title: "Protect your purchase"

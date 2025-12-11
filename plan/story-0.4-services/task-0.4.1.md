@@ -18,10 +18,6 @@ Create a Config service that fetches retailer configuration from the API, caches
 - ✅ Configuration includes retailer rules and settings
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Configuration Structure
 - Retailer moniker
 - Region settings

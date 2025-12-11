@@ -19,10 +19,6 @@ Update the QuoteCalculator service to support both client-side (cart page) and s
 - ✅ Both return Quote type
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Mode Selection
 - **Cart page**: client mode (fast, no backend call)
 - **Checkout page**: server mode (secure, validated)

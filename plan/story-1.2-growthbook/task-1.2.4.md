@@ -19,10 +19,6 @@ Implement the setExperiment() public API method that allows forced variant assig
 - ✅ Zero-throw guarantee
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## API Signature
 ```typescript
 setExperiment(experimentId: string, variant: string): void

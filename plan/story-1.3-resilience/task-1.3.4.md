@@ -19,10 +19,6 @@ Integrate retry logic into the Coordinator. Automatically retry network errors w
 - ✅ Quote calculation not retried (new cart may differ)
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Retry Flow
 1. Operation fails with NetworkError
 2. Check if retryable

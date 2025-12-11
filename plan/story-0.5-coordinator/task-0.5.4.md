@@ -20,10 +20,6 @@ Implement user action handlers for protection selection and declination. These m
 - ✅ Handles invalid quote IDs gracefully
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Event Payloads
 **Add Protection:**
 ```typescript

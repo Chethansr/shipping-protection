@@ -18,10 +18,6 @@ Implement event handlers for button clicks. Emit checkout events that include qu
 - ✅ Disabled state prevents clicks
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Event Payloads
 **narvar:shipping-protection:action:checkout:**
 ```typescript

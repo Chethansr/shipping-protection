@@ -21,10 +21,6 @@ Implement event handlers for user interactions with the widget. Handle clicks, k
 - ✅ Disabled state prevents interactions
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Keyboard Interactions
 - **Tab**: Focus widget
 - **Space**: Toggle selection

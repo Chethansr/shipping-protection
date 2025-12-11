@@ -20,10 +20,6 @@ Connect the widget component to the Coordinator state. Subscribe to state change
 - ✅ No memory leaks from subscriptions
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## State Mapping
 - UNINITIALIZED: Hidden
 - INITIALIZING: Loading

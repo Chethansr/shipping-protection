@@ -18,10 +18,6 @@ Create comprehensive test coverage for quote calculation across various cart sce
 - ✅ Tests check expiration timestamps
 - ✅ 90%+ test coverage achieved
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Test Scenarios
 1. Single item cart
 2. Multi-item cart

@@ -18,10 +18,6 @@ Implement maximum retry limit enforcement. After 3 failed retries, transition to
 - ✅ No further retries attempted
 - ✅ 100% test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Terminal Error Handling
 1. Retry count reaches 3
 2. Check isRetryable(error) returns false

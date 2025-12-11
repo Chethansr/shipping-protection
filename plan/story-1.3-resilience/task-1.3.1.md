@@ -18,10 +18,6 @@ Add the RETRY state action that transitions from ERROR back to READY state, enab
 - ✅ Max retries enforced
 - ✅ 100% test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## State Updates
 ```typescript
 ERROR state: {

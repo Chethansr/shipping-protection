@@ -18,10 +18,6 @@ Create the Growthbook service factory that initializes the Growthbook SDK and pr
 - ✅ Errors don't crash SDK
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## SDK Attributes
 - `userId`: Customer ID or anonymous ID
 - `retailer`: Retailer moniker

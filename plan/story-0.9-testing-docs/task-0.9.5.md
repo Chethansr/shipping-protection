@@ -20,10 +20,6 @@ Create comprehensive API reference documentation for all public methods, types, 
 - ✅ Return values documented
 - ✅ Error conditions listed
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## API Methods to Document
 - `init(config: ShippingProtectionConfig): Promise<void>`
 - `render(containerId: string, cartData: CartData): Promise<void>`

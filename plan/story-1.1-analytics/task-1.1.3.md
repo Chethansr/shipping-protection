@@ -20,10 +20,6 @@ Implement the track() function that batches analytics events and sends them usin
 - ✅ Network errors handled gracefully
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Beacon API Usage
 ```javascript
 navigator.sendBeacon(url, JSON.stringify(events));

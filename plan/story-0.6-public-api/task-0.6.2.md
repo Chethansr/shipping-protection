@@ -26,10 +26,6 @@ Implement all public API methods that developers will use to interact with the S
 - ✅ All methods have zero-throw guarantee
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## API Signatures
 ```typescript
 interface NarvarShippingProtectionAPI {

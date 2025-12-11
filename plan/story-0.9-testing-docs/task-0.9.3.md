@@ -21,10 +21,6 @@ Create comprehensive accessibility tests to ensure WCAG 2.1 AA compliance. Test 
 - ✅ Focus indicators visible
 - ✅ Accessibility documentation complete
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Accessibility Test Cases
 1. **axe-core**: Run automated accessibility audit
 2. **Keyboard nav**: Tab through widget, activate with Space/Enter

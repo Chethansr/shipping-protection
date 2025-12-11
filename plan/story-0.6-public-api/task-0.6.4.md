@@ -19,10 +19,6 @@ Implement the SDK bootstrap flow that runs on first init() call. Includes featur
 - ✅ Bootstrap only happens once
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Bootstrap Steps
 1. Check browser feature support
 2. Initialize Coordinator

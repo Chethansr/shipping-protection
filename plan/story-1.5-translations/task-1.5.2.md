@@ -18,10 +18,6 @@ Define all translation keys for widget strings. Create a type-safe translation k
 - ✅ Translation template provided
 - ✅ 100% key coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Translation Keys
 ```typescript
 enum TranslationKey {

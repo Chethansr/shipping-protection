@@ -21,10 +21,6 @@ Integrate analytics tracking throughout the Coordinator. Track initialization, s
 - ✅ All events include relevant context
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Events to Track
 - `secure_sdk_initialized`
 - `secure_sdk_ready`

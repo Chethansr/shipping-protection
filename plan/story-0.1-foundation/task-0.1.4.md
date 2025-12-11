@@ -19,10 +19,6 @@ Create self-contained utility functions for common operations: storage helpers f
 - ✅ 100% test coverage with mocked storage
 - ✅ TypeScript types are fully inferred
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Testing Strategy
 - Test setStorageItem and getStorageItem roundtrip
 - Test getStorageItem returns null for missing keys

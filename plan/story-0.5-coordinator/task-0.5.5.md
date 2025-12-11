@@ -20,10 +20,6 @@ Implement comprehensive error handling throughout the Coordinator. Catch errors 
 - ✅ No unhandled promise rejections
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Error Scenarios to Handle
 1. Config fetch failure
 2. Config validation failure

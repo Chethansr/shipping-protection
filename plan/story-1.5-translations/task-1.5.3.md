@@ -18,10 +18,6 @@ Integrate translations into web components. Replace hard-coded strings with tran
 - ✅ Missing translations show key
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Translation Function
 ```typescript
 function t(key: TranslationKey, variables?: Record<string, string>): string {

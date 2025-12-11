@@ -18,10 +18,6 @@ Implement locale fallback mechanism. If a translation is missing for the request
 - ✅ No rendering errors on missing translations
 - ✅ 100% test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Fallback Flow
 1. Check requested locale translations
 2. If key found: return translation

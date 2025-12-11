@@ -20,10 +20,6 @@ Create security-focused tests to validate XSS protection, CSP compliance, and Sh
 - ✅ No eval() or Function() usage
 - ✅ Security documentation complete
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Security Test Cases
 1. **XSS via cart data**: Inject `<script>` in item names
 2. **XSS via config**: Inject scripts in config strings

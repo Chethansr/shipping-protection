@@ -18,10 +18,6 @@ Create a tiny (<2KB) loader stub that gets embedded in retailer pages. The stub 
 - ✅ Sets window.Narvar.Secure namespace
 - ✅ No dependencies required
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Loader Structure
 ```
 window.Narvar = window.Narvar || {};

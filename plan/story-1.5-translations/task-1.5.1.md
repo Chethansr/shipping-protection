@@ -18,10 +18,6 @@ Add getTranslations() method to the config service that fetches and caches trans
 - ✅ Handles missing locale gracefully
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Translation Config Structure
 ```typescript
 {

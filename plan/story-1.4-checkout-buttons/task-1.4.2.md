@@ -19,10 +19,6 @@ Implement the two button variants: checkout-with-protection and checkout-without
 - ✅ Styles match theme
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Button Content
 **With Protection:**
 - "Checkout with Protection"

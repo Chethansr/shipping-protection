@@ -19,10 +19,6 @@ Implement the setCustomerIdentity() public API method that allows retailers to p
 - ✅ Zero-throw guarantee
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## API Signature
 ```typescript
 setCustomerIdentity(customerId: string): void

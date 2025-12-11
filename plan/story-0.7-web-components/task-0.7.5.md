@@ -20,10 +20,6 @@ Implement proper component lifecycle methods to handle mounting, unmounting, and
 - ✅ No orphaned subscriptions
 - ✅ 100% test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Lifecycle Flow
 1. **connectedCallback**:
    - Subscribe to coordinator state

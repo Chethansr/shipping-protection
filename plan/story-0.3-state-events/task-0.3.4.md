@@ -16,10 +16,6 @@ Define all public events that external consumers can listen to. Document event p
 - ✅ Usage examples provided
 - ✅ Type safety enforced
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Public Events
 **State Events:**
 - `narvar:shipping-protection:state:ready` - After successful bootstrap + init (payload: `version`)

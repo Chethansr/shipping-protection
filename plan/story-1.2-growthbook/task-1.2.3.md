@@ -18,10 +18,6 @@ Provide a getFeatures() accessor method that returns evaluated feature flags. Ma
 - ✅ Supports boolean, string, number, JSON features
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Feature Types
 ```typescript
 interface Features {

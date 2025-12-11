@@ -19,10 +19,6 @@ Create a simple "Hello World" web component using Lit to verify the entire build
 - ✅ Component has basic test coverage
 - ✅ Demo HTML page loads component successfully
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Validation Steps
 1. Build the project: `npm run build`
 2. Open demo page in browser

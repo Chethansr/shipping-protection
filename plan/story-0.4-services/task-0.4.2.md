@@ -22,10 +22,6 @@ Create a QuoteCalculator service that performs protection quote calculations.
 - ✅ Returns Result<Quote, WidgetError>
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Quote Structure
 **Phase 0 Quote Type**:
 - `amount`: number (protection price in base currency units)

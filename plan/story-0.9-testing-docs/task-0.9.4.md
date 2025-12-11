@@ -20,10 +20,6 @@ Create a comprehensive integration guide for developers implementing shipping-pr
 - ✅ Complete working examples provided
 - ✅ Code samples tested and working
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Guide Sections
 1. **Quickstart**
    - Installation

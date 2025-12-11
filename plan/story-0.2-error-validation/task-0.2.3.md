@@ -19,10 +19,6 @@ Create Zod validation schemas for SecureConfig structure, including retailerMoni
 - ✅ Validation errors include field names
 - ✅ 100% test coverage for valid and invalid inputs
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Testing Strategy
 - Test accepts valid configuration
 - Test rejects empty retailerMoniker

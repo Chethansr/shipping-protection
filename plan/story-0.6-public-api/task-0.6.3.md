@@ -18,10 +18,6 @@ Wrap all public API methods with error handlers to guarantee they never throw ex
 - ✅ Error context preserved for debugging
 - ✅ 100% test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Wrapper Pattern
 ```typescript
 safeWrapAsync<T>(fn: () => Promise<T>): Promise<Result<T, WidgetError>>

@@ -20,10 +20,6 @@ Create comprehensive tests for theme override functionality. Test multiple retai
 - ✅ Multiple themes tested
 - ✅ 90%+ test coverage
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## Test Themes
 1. **Brand A**: Orange primary, custom font
 2. **Brand B**: Green primary, larger spacing

@@ -4,13 +4,71 @@ Add delivery protection to any e-commerce platform with a simple JavaScript inte
 
 ## Table of Contents
 
-1. [High-Level Architecture](#high-level-architecture)
-2. [Web Integration](#web-integration)
-3. [Mobile React Native Integration](#mobile-react-native-integration)
-4. [Quote Verification & Order API](#quote-verification--order-api)
-5. [Troubleshooting & FAQ](#troubleshooting--faq)
-6. [API Reference](#api-reference)
-7. [Appendices](#appendices)
+- [Getting Started](#getting-started)
+- [High-Level Architecture](#high-level-architecture)
+- [Web Integration](#web-integration)
+- [Mobile React Native Integration](#mobile-react-native-integration)
+- [Quote Verification & Order API](#quote-verification--order-api)
+- [Troubleshooting & FAQ](#troubleshooting--faq)
+- [API Reference](#api-reference)
+- [Appendices](#appendices)
+
+---
+
+## Getting Started
+
+Integrate shipping protection in under 5 minutes.
+
+### Minimal Setup
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://edge-compute-f.dp.domain-ship.qa20.narvar.qa/dist/shipping-protection.js"></script>
+</head>
+<body>
+  <narvar-shipping-protection-widget></narvar-shipping-protection-widget>
+
+  <script>
+    (async function() {
+      // Initialize SDK
+      await Narvar.ShippingProtection.init({
+        retailerMoniker: 'your-store',
+        region: 'US',
+        locale: 'en-US',
+        variant: 'toggle',
+        page: 'cart',
+        environment: 'qa'
+      });
+
+      // Render protection offer
+      Narvar.ShippingProtection.render({
+        items: [
+          { sku: 'ITEM-001', quantity: 1, price: 49.99 }
+        ],
+        subtotal: 49.99,
+        currency: 'USD'
+      });
+
+      // Listen for protection selection
+      window.addEventListener('narvar:shipping-protection:action:add-protection', (evt) => {
+        const { amount, currency } = evt.detail;
+        console.log(`Add protection: ${currency} ${amount / 100}`);
+        // Add protection line item to cart
+      });
+    })();
+  </script>
+</body>
+</html>
+```
+
+**What happens:**
+
+- SDK loads asynchronously (60KB gzipped)
+- Widget renders in Shadow DOM (CSS isolated)
+- Quote calculated instantly (client-side)
+- Events fired when customer selects or declines protection
 
 ---
 
@@ -26,7 +84,7 @@ Add delivery protection to any e-commerce platform with a simple JavaScript inte
 │  │  Retailer's Website                                   │  │
 │  │                                                       │  │
 │  │  ┌─────────────────────────────────────────────┐    │  │
-│  │  │  Loader Stub (<2KB, inline-able)            │    │  │
+│  │  │  Loader Stub (under 2KB, inline-able)         │    │  │
 │  │  │  • Creates Narvar.ShippingProtection API    │    │  │
 │  │  │  • Queues calls before bundle loads          │    │  │
 │  │  │  • Loads full bundle asynchronously          │    │  │
@@ -35,7 +93,7 @@ Add delivery protection to any e-commerce platform with a simple JavaScript inte
 │  │  ┌─────────────────────────────────────────────┐    │  │
 │  │  │  <narvar-shipping-protection-widget>         │    │  │
 │  │  │  • Shadow DOM (CSS isolated)                 │    │  │
-│  │  │  • Toggle or  button variant                 │    │  │
+│  │  │  • Toggle or checkbox variant                │    │  │
 │  │  │  • Themeable via CSS custom properties       │    │  │
 │  │  └─────────────────────────────────────────────┘    │  │
 │  │                        ↕                              │  │
@@ -72,6 +130,8 @@ Add delivery protection to any e-commerce platform with a simple JavaScript inte
 #### Cart Page Flow
 
 ```
+Load loader and init
+        ↓
 Customer adds item to cart
         ↓
 Retailer calls render(cartData)
@@ -98,13 +158,13 @@ SDK calls edge endpoint for server-side quote
         ↓
 Edge server calculates premium + signs with JWS
         ↓
-SDK emits quote-available event with signature
+SDK emits quote-available event with signature and eligibility
         ↓
 Retailer stores signed quote
         ↓
 Customer completes order
         ↓
-Retailer backend verifies JWS signature
+Retailer backend verifies JWS signature (optional)
         ↓
 Retailer submits order to Narvar with signature
 ```
@@ -138,11 +198,11 @@ Retailer submits order to Narvar with signature
 
 ## Web Integration
 
-### Step 1: Add Loader Stub
+### Add Loader Stub
 
 Add the loader stub to your page. This creates the API immediately and loads the full bundle asynchronously.
 
-**Inline Script (CSP-friendly, <2KB)**
+**Inline Script (under 2KB)**
 
 ```html
 <script>
@@ -174,7 +234,7 @@ Add the loader stub to your page. This creates the API immediately and loads the
 </script>
 ```
 
-### Step 2: Add Web Component
+### Add Web Component
 
 Place the widget where you want the protection offer to appear:
 
@@ -184,22 +244,24 @@ Place the widget where you want the protection offer to appear:
 
 The widget automatically adjusts its height based on content (responsive).
 
-### Step 3: Initialize SDK
+### Initialize SDK
 
 Call `init()` once when your page loads:
 
 ```javascript
-const result = await Narvar.ShippingProtection.init({
-  retailerMoniker: 'your-store',    // Provided by Narvar
-  region: 'US',                     // Shipping destination
-  locale: 'en-US',                  // Language/locale
-  variant: 'toggle',                // 'toggle' or 'button'
-  page: 'cart'                      // 'cart' or 'checkout'
-});
+(async function() {
+  const result = await Narvar.ShippingProtection.init({
+    retailerMoniker: 'your-store',    // Provided by Narvar
+    region: 'US',                     // Shipping destination
+    locale: 'en-US',                  // Language/locale
+    variant: 'toggle',                // 'toggle' or 'button'
+    page: 'cart'                      // 'cart' or 'checkout'
+  });
 
-if (!result.ok) {
-  console.error('Init failed:', result.error);
-}
+  if (!result.ok) {
+    console.error('Init failed:', result.error);
+  }
+})();
 ```
 
 **Configuration Fields:**
@@ -209,8 +271,8 @@ if (!result.ok) {
 | `retailerMoniker` | string | Yes | Your unique store identifier (provided by Narvar) |
 | `region` | string | Yes | Shipping destination region (e.g., 'US', 'CA') |
 | `locale` | string | Yes | Language and locale (e.g., 'en-US', 'fr-CA') |
-| `variant` | 'toggle' \| 'checkbox' | Yes | Widget display style |
-| `page` | 'cart' \| 'checkout' | Yes | Context for quote calculation (client vs server) |
+| `variant` | 'toggle' or 'checkbox' | Yes | Widget display style |
+| `page` | 'cart' or 'checkout' | Yes | Context for quote calculation (client vs server) |
 | `configUrl` | string | No | Override config endpoint (auto-derived if omitted) |
 | `debug` | boolean | No | Enable debug logging |
 
@@ -218,7 +280,7 @@ if (!result.ok) {
 
 **Timeout:** `init()` times out after 10 seconds if config cannot be fetched.
 
-### Step 4: Render Widget
+### Render Widget
 
 Call `render()` whenever cart data changes:
 
@@ -254,7 +316,7 @@ Narvar.ShippingProtection.render({
 - `render()` is automatically debounced (100ms) to prevent API spam
 - Rapid calls cancel previous pending renders
 
-### Step 5: Handle Events
+### Handle Events
 
 Subscribe to events to respond to widget state changes:
 
@@ -346,8 +408,9 @@ The widget supports theming via CSS custom properties. Set these on `:root` or a
 **Cart Page Pattern:**
 
 ```javascript
-// Client-side quote calculation (instant)
-await Narvar.ShippingProtection.init({
+(async function() {
+  // Client-side quote calculation (instant)
+  await Narvar.ShippingProtection.init({
   variant: 'button',
   page: 'cart',  // Client-side
   retailerMoniker: 'your-store',
@@ -355,21 +418,23 @@ await Narvar.ShippingProtection.init({
   locale: 'en-US'
 });
 
-Narvar.ShippingProtection.render(cartData);
+  Narvar.ShippingProtection.render(cartData);
 
-// Quote available immediately (no signature)
-window.Narvar.ShippingProtection.on('narvar:shipping-protection:state:quote-available', (evt) => {
-  console.log('Client quote:', evt.detail.quote.amount);
-});
+  // Quote available immediately (no signature)
+  window.Narvar.ShippingProtection.on('narvar:shipping-protection:state:quote-available', (evt) => {
+    console.log('Client quote:', evt.detail.quote.amount);
+  });
+})();
 ```
 
 **Checkout Page Pattern:**
 
 ```javascript
-let signedQuote = null;
+(async function() {
+  let signedQuote = null;
 
-// Server-side quote with JWS signature
-await Narvar.ShippingProtection.init({
+  // Server-side quote with JWS signature
+  await Narvar.ShippingProtection.init({
   variant: 'toggle',
   page: 'checkout',  // Server-side with signature
   retailerMoniker: 'your-store',
@@ -380,35 +445,35 @@ await Narvar.ShippingProtection.init({
 Narvar.ShippingProtection.render(cartData);
 
 // Quote available with signature (~35-40ms)
-window.Narvar.ShippingProtection.on('narvar:shipping-protection:state:quote-available', (evt) => {
-  const { quote } = evt.detail;
+  window.Narvar.ShippingProtection.on('narvar:shipping-protection:state:quote-available', (evt) => {
+    const { quote } = evt.detail;
 
-  // Phase 0: No signature yet (client-side only)
-  // Phase 1: quote.signature contains JWS for backend verification
-  if (quote.signature) {
-    signedQuote = quote;
-    console.log('Signed quote ready for order submission');
-  }
-});
-
-// On order submission
-async function submitOrder() {
-  const orderData = {
-    //...
-    cart: cartData,
-    customer: customerData,
-    attributes: {
-      narvar_shipping_protection_quote: signedQuote?.signature,
-      narvar_shipping_protection_premium: signedQuote?.amount
+    // Phase 0: No signature yet (client-side only)
+    // Phase 1: quote.signature contains JWS for backend verification
+    if (quote.signature) {
+      signedQuote = quote;
+      console.log('Signed quote ready for order submission');
     }
-  };
-
-  // Your backend verifies signature before accepting order
-  await fetch('/api/orders', {
-    method: 'POST',
-    body: JSON.stringify(orderData)
   });
-}
+
+  // On order submission
+  async function submitOrder() {
+    const orderData = {
+      cart: cartData,
+      customer: customerData,
+      attributes: {
+        narvar_shipping_protection_quote: signedQuote?.signature,
+        narvar_shipping_protection_premium: signedQuote?.amount
+      }
+    };
+
+    // Your backend verifies signature before accepting order
+    await fetch('/api/orders', {
+      method: 'POST',
+      body: JSON.stringify(orderData)
+    });
+  }
+})();
 ```
 ** Signature verification is done on Merchant's backend. Refer to [Quote Verification & Order API](#quote-verification--order-api)
 
@@ -589,19 +654,18 @@ Secure order submission using cryptographic signatures to prevent premium manipu
 **When:** Required on checkout page (`page: 'checkout'`) for order submission
 
 **Flow:**
-```
-1. Client sends cart to Narvar edge endpoint
-2. Edge calculates premium and signs with private key
-3. Signature returned in quote-available event
-4. Client submits order with signature to merchant backend
-5. Merchant backend verifies signature using Narvar public keys
-6. Merchant accepts order only if signature valid
-7. Merchant includes signature in order sent to Narvar
-```
+
+- Client sends cart to Narvar edge endpoint
+- Edge calculates premium and signs with private key
+- Signature returned in quote-available event
+- Client submits order with signature to merchant backend
+- Merchant backend verifies signature using Narvar public keys
+- Merchant accepts order only if signature valid
+- Merchant includes signature in order sent to Narvar
 
 ### Step-by-Step Verification Process
 
-#### Step 1: Extract Key ID from JWS Header
+#### Extract Key ID from JWS Header
 
 JWS format: `header.payload.signature` (three Base64-encoded parts separated by dots)
 
@@ -620,7 +684,7 @@ echo "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjVJN2Y5TThrOUZmc2FaRU1tbFVrcE
 
 The `kid` (key ID) tells you which public key to use for verification.
 
-#### Step 2: Fetch Public Keys (JWKS)
+#### Fetch Public Keys (JWKS)
 
 ```bash
 curl -s https://edge-compute-f.dp.domain-ship.qa20.narvar.qa/.well-known/jwks.json | jq .
@@ -652,9 +716,9 @@ curl -s https://edge-compute-f.dp.domain-ship.qa20.narvar.qa/.well-known/jwks.js
 
 Cache JWKS response for performance (refresh periodically for key rotation).
 
-#### Step 3: Select Matching Public Key
+#### Select Matching Public Key
 
-Find the key where `kid` matches the value from Step 1:
+Find the key where `kid` matches the value from the header:
 
 ```json
 {
@@ -668,7 +732,7 @@ Find the key where `kid` matches the value from Step 1:
 }
 ```
 
-#### Step 4: Verify Signature
+#### Verify Signature
 
 Use standard JWT library with the selected public key:
 
@@ -802,26 +866,26 @@ def create_order():
     # Process order...
 ```
 
-#### Step 5: Validate Claims
+#### Validate Claims
 
 After verifying signature, validate the payload claims:
 
-```javascript
+```json
 {
-  "iat": 1765302649,           // Issued at (Unix timestamp)
-  "exp": 1765561849,           // Expiration (Unix timestamp)
+  "iat": 1765302649,
+  "exp": 1765561849,
   "iss": "delivery-protection-edge",
   "sub": "quote",
-  "eligible": true,            // Eligibility status
+  "eligible": true,
   "quote": {
     "order_items": [
       {
         "eligible": true,
-        "insured_value": 10850,  // In cents
+        "insured_value": 10850,
         "sku": "SKU-001"
       }
     ],
-    "premium_value": 218,       // In cents
+    "premium_value": 218,
     "rules_version": 30,
     "total_insured_value": 4435,
     "total_not_insured_value": 0,
@@ -829,6 +893,14 @@ After verifying signature, validate the payload claims:
   }
 }
 ```
+
+**Field Descriptions:**
+- `iat` - Issued at (Unix timestamp)
+- `exp` - Expiration (Unix timestamp)
+- `eligible` - Eligibility status
+- `insured_value` - Item value in cents
+- `premium_value` - Premium amount in cents
+- `valid_until` - Quote expiration (ISO 8601)
 
 **Validation Checklist:**
 - [ ] `exp` (expiration) is in the future
@@ -861,10 +933,11 @@ POST /api/orders
 ```
 
 Your backend must:
-1. Verify JWS signature (Steps 1-4 above)
-2. Validate claims (Step 5)
-3. Accept order if verification succeeds
-4. Include JWS in order data sent to Narvar
+
+- Verify JWS signature (see verification process above)
+- Validate claims (see validation section above)
+- Accept order if verification succeeds
+- Include JWS in order data sent to Narvar
 
 ### Server-Side Quote Request (Optional)
 
@@ -916,20 +989,22 @@ curl -X POST 'https://edge-compute-f.dp.domain-ship.qa20.narvar.qa/v1/quote' \
 A: Check browser console for errors. Verify `init()` succeeded by listening for `state:ready` event:
 
 ```javascript
-window.Narvar.ShippingProtection.on('narvar:shipping-protection:state:ready', () => {
-  console.log('SDK ready');
-});
+(async function() {
+  window.Narvar.ShippingProtection.on('narvar:shipping-protection:state:ready', () => {
+    console.log('SDK ready');
+  });
 
-const result = await Narvar.ShippingProtection.init(config);
-if (!result.ok) {
-  console.error('Init failed:', result.error.message);
-}
+  const result = await Narvar.ShippingProtection.init(config);
+  if (!result.ok) {
+    console.error('Init failed:', result.error.message);
+  }
+})();
 ```
 
 **Q: Quote calculation is slow**
 
 A: Check network tab:
-- **Cart page:** Should be instant (<50ms) - client-side calculation
+- **Cart page:** Should be instant (under 50ms) - client-side calculation
 - **Checkout page:** ~35-40ms typical for server-side signed quote
 - If slower, may be network latency or edge endpoint issue
 
@@ -973,16 +1048,18 @@ A: Verify:
 Enable detailed logging:
 
 ```javascript
-const result = await Narvar.ShippingProtection.init({
-  ...config,
-  debug: true
-});
+(async function() {
+  const result = await Narvar.ShippingProtection.init({
+    ...config,
+    debug: true
+  });
 
-// Watch browser console for:
-// - State transitions
-// - Event emissions
-// - Quote calculations
-// - Error details
+  // Watch browser console for:
+  // - State transitions
+  // - Event emissions
+  // - Quote calculations
+  // - Error details
+})();
 ```
 
 ### Error Messages
@@ -1034,9 +1111,9 @@ async init(config: ShippingProtectionConfig): Promise<Result<void, Error>>
 | `retailerMoniker` | string | Yes | - | Your unique store identifier |
 | `region` | string | Yes | - | Shipping destination (e.g., 'US', 'CA') |
 | `locale` | string | Yes | - | Language/locale (e.g., 'en-US', 'fr-CA') |
-| `variant` | 'toggle' \| 'checkbox' | Yes | - | Widget display style |
-| `page` | 'cart' \| 'checkout' | Yes | - | Context (determines quote calculation method) |
-| `environment` | 'qa' \| 'st' \| 'prod' | No | 'qa' | Environment |
+| `variant` | 'toggle' or 'checkbox' | Yes | - | Widget display style |
+| `page` | 'cart' or 'checkout' | Yes | - | Context (determines quote calculation method) |
+| `environment` | 'qa' or 'st' or 'prod' | No | 'qa' | Environment |
 | `configUrl` | string | No | (auto) | Override config endpoint URL |
 | `debug` | boolean | No | false | Enable debug logging |
 
@@ -1049,20 +1126,22 @@ async init(config: ShippingProtectionConfig): Promise<Result<void, Error>>
 **Example:**
 
 ```javascript
-const result = await Narvar.ShippingProtection.init({
-  retailerMoniker: 'your-store',
-  region: 'US',
-  locale: 'en-US',
-  variant: 'toggle',
-  page: 'cart',
-  environment: 'qa'
-});
+(async function() {
+  const result = await Narvar.ShippingProtection.init({
+    retailerMoniker: 'your-store',
+    region: 'US',
+    locale: 'en-US',
+    variant: 'toggle',
+    page: 'cart',
+    environment: 'qa'
+  });
 
-if (result.ok) {
-  console.log('Init succeeded');
-} else {
-  console.error('Init failed:', result.error);
-}
+  if (result.ok) {
+    console.log('Init succeeded');
+  } else {
+    console.error('Init failed:', result.error);
+  }
+})();
 ```
 
 ---
@@ -1269,9 +1348,9 @@ Narvar.ShippingProtection.destroy();
 
 **Performance Targets:**
 - Bundle size: ~60KB gzipped
-- Loader stub: <2KB
-- Quote (cart): <50ms
-- Quote (checkout): <100ms (including network)
+- Loader stub: under 2KB
+- Quote (cart): under 50ms
+- Quote (checkout): under 100ms (including network)
 - Memory: 2-5MB typical
 
 **Capacity:**
@@ -1283,9 +1362,9 @@ Narvar.ShippingProtection.destroy();
 
 **CDN Versioning Strategy:**
 
-1. **Tier 1 - Rolling updates:** `/v1/` - Latest v1.x.x (backward-compatible)
-2. **Tier 2 - Conservative:** `/v1.5/` - Latest v1.5.x (bug fixes only)
-3. **Tier 3 - Frozen:** `/v1.5.4/` - Specific version (never updates)
+- **Tier 1 - Rolling updates:** `/v1/` - Latest v1.x.x (backward-compatible)
+- **Tier 2 - Conservative:** `/v1.5/` - Latest v1.5.x (bug fixes only)
+- **Tier 3 - Frozen:** `/v1.5.4/` - Specific version (never updates)
 
 **Recommendation:** Use `/v1/` for automatic bug fixes and improvements. Use pinned version for strict change control.
 
@@ -1300,8 +1379,12 @@ Narvar.ShippingProtection.destroy();
 ```
 
 ### Webhooks for Claim Status
-https://docs.narvar.io/reference/post_newclaim
 
+Coming soon. Future webhooks will notify of:
+- Claim filed
+- Claim approved
+- Claim rejected
+- Claim paid
 
 ### Browser Support
 

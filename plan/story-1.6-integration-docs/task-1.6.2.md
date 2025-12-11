@@ -21,10 +21,6 @@ Create E2E tests that simulate complete user journeys from cart page through che
 - ✅ Multiple locales tested
 - ✅ Tests pass in CI
 
-## Implementation Notes
-Suggested code snippets and implementation examples can be found at:
-https://github.com/niccai/secure-sdk-plan
-
 ## User Journeys
 **Journey 1: Cart → Select Protection → Checkout**
 1. Load cart page
