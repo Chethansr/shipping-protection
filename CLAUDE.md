@@ -10,6 +10,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - When there are conflicts between this document and the TRDs, **the TRDs take precedence**
 - Periodically sync this file with the latest TRD updates
 
+**Accessing TRDs**: When you need to fetch the latest content from Atlassian TRDs, use the Atlassian MCP (Model Context Protocol) if available. This provides direct access to Jira and Confluence pages without authentication redirects.
+
 ## Project Overview
 
 **shipping-protection.js** is Narvar's universal JavaScript widget that brings shipping protection to headless commerce and custom storefronts. Built as a third-party script similar to Google Analytics or Stripe, it works on any e-commerce platform regardless of backend technology, framework choice, or custom implementation.
